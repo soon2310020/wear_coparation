@@ -7,7 +7,7 @@ import com.example.wear_shop.mapping.FileMapping;
 import com.example.wear_shop.repo.FileRepository;
 import com.example.wear_shop.service.FileService;
 import com.example.wear_shop.util.DateUtils;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +74,7 @@ public class FileServiceImpl implements FileService {
         File file = new File(savedFilePath);
         file.createNewFile();
         if (uploadFormDto.getContent() != null) {
-            FileUtils.writeByteArrayToFile(file, uploadFormDto.getContent());
+            org.apache.commons.io.FileUtils.writeByteArrayToFile(file, uploadFormDto.getContent());
         }
         uploadFormDto.setContent(null);
         uploadFormDto.setFilePath(savedFilePath);

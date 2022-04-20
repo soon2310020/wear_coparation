@@ -24,9 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 public class FileController {
-
-    @Value("${spring.application.name}")
-    private String applicationName;
+    
 
 //    private static final String ENTITY_NAME = "File";
 

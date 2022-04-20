@@ -31,3 +31,5 @@ spring:
         useServerPrepStmts: true
   jpa:
     show-sql: false
+app:
+  uploadFileDir: E:\wear copation\upload
