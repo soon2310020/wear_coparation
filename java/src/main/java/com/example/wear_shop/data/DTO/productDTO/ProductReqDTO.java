@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class ProductReqDTO {
     private String name;
-    private Double fromPrice;
-    private Double toPrice;
+    private Long fromPrice;
+    private Long toPrice;
     private List<Long> categoryIds;
 }
