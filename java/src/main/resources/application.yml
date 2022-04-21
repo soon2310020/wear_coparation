@@ -33,3 +33,5 @@ spring:
     show-sql: false
 app:
   uploadFileDir: E:\wear copation\upload
+  uploadFileDir2: E:\wear copation\New folder\sb-admin-2-vue\src\assets
+  uploadFileDir3: E:\wear copation\frontEnd\shipit\src\assets

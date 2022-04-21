@@ -76,7 +76,7 @@ public class FileServiceImpl implements FileService {
         if (uploadFormDto.getContent() != null) {
             org.apache.commons.io.FileUtils.writeByteArrayToFile(file, uploadFormDto.getContent());
         }
-        uploadFormDto.setContent(null);
+//        uploadFormDto.setContent(null);
         uploadFormDto.setFilePath(savedFilePath);
         FileEntity entity = this.fileMapping.mappingFormDtoToEntity(uploadFormDto);
 

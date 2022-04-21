@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 public class FileController {
-    
+
 
 //    private static final String ENTITY_NAME = "File";
 

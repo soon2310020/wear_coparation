@@ -26,6 +26,16 @@ public class CategoryServiceImpl implements CategoryService {
         category.setUpdateAt(Instant.now());
         category.setName(req.getName());
         category.setDescription(req.getDescription());
+        if (req.getFileId()!=null||!req.getFileId().isEmpty())
+        {
+            String fileIds ="";
+
+            for (Long fileId:req.getFileId()
+                 ) {
+                fileIds+=fileId+" ";
+            }
+            category.setFile(fileIds);
+        }
         categoryRepository.save(category);
     }
 

@@ -32,5 +32,8 @@ public class Category {
     @OneToMany(mappedBy = "category")
     List<Product> products;
 
+    @Column(name = "file_id")
+    String file;
+
 
 }

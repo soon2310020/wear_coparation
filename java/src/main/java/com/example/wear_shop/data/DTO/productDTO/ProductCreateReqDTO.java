@@ -1,14 +1,14 @@
-package com.example.wear_shop.data.Entity;
+package com.example.wear_shop.data.DTO.productDTO;
 
+import com.example.wear_shop.data.Entity.Category;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.Instant;
 
 @Data
-@Entity
-@Table(name = "products")
-public class Product {
+public class ProductCreateReqDTO {
+    private String name;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -37,14 +37,11 @@ public class Product {
     @Column(name = "avatar")
     Long avatar;
 
-    @Column(name ="file")
+    @Column(name ="file_id")
     String file;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
-
-
-
 
 }

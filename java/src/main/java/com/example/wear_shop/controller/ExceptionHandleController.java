@@ -17,6 +17,7 @@ public class ExceptionHandleController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageDTO> handleUnKnowException(Exception exception) {
+        exception.printStackTrace();
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setMessages(exception.getMessage());
         messageDTO.setErrorCode("1");
@@ -26,6 +27,7 @@ public class ExceptionHandleController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<MessageDTO> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
+        ex.printStackTrace();
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setMessages(ex.getMessage());
         messageDTO.setErrorCode("2");
@@ -33,7 +35,7 @@ public class ExceptionHandleController {
     }
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<ErrorDto> handleFileNotFoundException(FileNotFoundException e) {
-
+        e.printStackTrace();
         ErrorDto errorDto = new ErrorDto(HttpStatus.NOT_FOUND, "Not found", e.getMessage());
         return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
