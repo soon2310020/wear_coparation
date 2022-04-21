@@ -21,7 +21,7 @@
             <b-button type="button" variant="primary" @click="search"
               >Tìm kiếm</b-button
             >
-            <el-button type="button" @click="test">Thêm mới</el-button>
+            <el-button type="button" @click="test()">Thêm mới</el-button>
           </div>
         </b-form>
       </div>
@@ -32,14 +32,16 @@
           <el-table-column prop="name" label="Tên loại sản phẩm">
           </el-table-column>
           <el-table-column prop="description" label="Mô tả"> </el-table-column>
-          <el-table-column label="Chi tiết">
+          <el-table-column prop="createAt" label="Ngày tạo"> </el-table-column>
+           <el-table-column prop="updateAt" label="Ngày cập nhật"> </el-table-column>
+          <el-table-column label="Thao tác">
             <template slot-scope="scope">
-              <el-button type="primary" @click="handleDetail('edit', scope.row)"
+              <el-button type="primary" @click="handleDetail(scope.row)"
                 >Chi tiết</el-button
               >
               <el-button
                 type="danger"
-                @click="handleDetail('delete', scope.row)"
+                @click="handleDelete(scope.row.id)"
                 >Xóa</el-button
               >
             </template>
@@ -50,14 +52,14 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           current-page.sync="5"
-          :page-size="100"
+          :page-size="size"
           layout="total, prev, pager, next"
-          :total="items.length"
+          :total="totalElements"
         >
         </el-pagination>
       </div>
     </div>
-    <el-dialog title="Thêm mới loại sản phẩm" :visible.sync="dialogFormVisible">
+    <el-dialog :title="active == 'create' ? 'Thêm mới loại sản phẩm' : 'Chi tiết loại sản phẩm'" :visible.sync="dialogFormVisible">
       <el-form :model="categoryCreate">
         <el-form-item label="Tên:" :label-width="formLabelWidth">
           <el-input v-model="categoryCreate.name" autocomplete="off"></el-input>
@@ -81,26 +83,14 @@
           >
             <i slot="default" class="el-icon-plus"></i>
             <div slot="file" slot-scope="{ file }">
-              {{file}}
+              <!-- {{file}} -->
+
               <img
                 class="el-upload-list__item-thumbnail"
-                :src="file.filePath"
+                :src="'data:' + file.contentType + ';base64,' + file.content"
                 alt=""
               />
               <span class="el-upload-list__item-actions">
-                <span
-                  class="el-upload-list__item-preview"
-                  @click="handlePictureCardPreview(file)"
-                >
-                  <i class="el-icon-zoom-in"></i>
-                </span>
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleDownload(file)"
-                >
-                  <i class="el-icon-download"></i>
-                </span>
                 <span
                   v-if="!disabled"
                   class="el-upload-list__item-delete"
@@ -143,7 +133,7 @@
         <img width="100%" :src="dialogImageUrl" alt="" />
       </el-dialog>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Hủy</el-button>
+        <el-button @click="cancel">Hủy</el-button>
         <el-button type="primary" @click="create">Lưu</el-button>
       </span>
     </el-dialog>
@@ -151,91 +141,114 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 
 export default {
-  created() {
-    this.search();
-    console.log("a");
+  created () {
+    this.search()
+    console.log('a')
   },
   methods: {
-    handleDetail(type, row) {
-      this.active = 'edit';
-      this.fileList = [];
-      this.fileIdList = [];
-      this.dialogFormVisible = true;
-      if (type === "edit") {
-        this.categoryCreate = Object.assign({}, row);
-        if (this.categoryCreate.file != null) {
-          let array = this.categoryCreate.file.trim().split(" ");
-          console.log(array);
-          array.forEach((element) => {
-            axios.get(this.baseURL + `/${element}`).then(
-              (res) => {
-                this.fileList.push(res.data);
-                this.fileIdList.push(res.data.id);
-              },
-              (error) => {}
-            );
-          });
-        }
-      } else {
+    handleDetail (row) {
+      this.active = 'edit'
+      this.fileList = []
+      this.fileIdList = []
+      this.dialogFormVisible = true
+      this.categoryCreate = Object.assign({}, row)
+      if (this.categoryCreate.file != null) {
+        let array = this.categoryCreate.file.trim().split(' ')
+        console.log(array)
+        array.forEach((element) => {
+          axios.get(this.baseURL + `/${element}`).then(
+            (res) => {
+              this.fileList.push(res.data)
+              this.fileIdList.push(res.data.id)
+            },
+            (error) => {
+              console.log(error)
+            }
+          )
+        })
       }
     },
-    handleAddFile(file, fileList) {
+    handleDelete (id) {
+      axios.delete(this.baseURL + '/categories/category/' + id).then(
+        (res) => {
+          this.$toast.open('Xóa sản phẩm ' + id + ' thành công !')
+          this.search()
+        },
+        (error) => {
+          console.log(error)
+          this.$toast.error('Tồn tại sản phẩm có loại sản phẩm trên không thể xóa !')
+        }
+      )
+    },
+    handleAddFile (file, fileList) {
       if (
-        file.name.includes("jpg") ||
-        file.name.includes("jpeg") ||
-        file.name.includes("png")
+        file.name.includes('jpg') ||
+        file.name.includes('jpeg') ||
+        file.name.includes('png')
       ) {
-        this.fileList = [];
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file.raw);
+        // this.fileList = []
+        const fileReader = new FileReader()
+        fileReader.readAsDataURL(file.raw)
         fileReader.onload = (e) => {
-          const dataRaw = e.target.result;
+          const dataRaw = e.target.result
           const base64Data = dataRaw.substr(
-            dataRaw.indexOf("base64,") + "base64,".length
-          );
+            dataRaw.indexOf('base64,') + 'base64,'.length
+          )
           const fileUpload = {
             content: base64Data,
             contentType: file.raw.type,
             name: file.name,
-            url: "",
-            extendsion: "Create",
-            id: null,
-          };
-          console.log(fileUpload);
-          axios.post(this.baseURL + "/upload", fileUpload).then(
+            url: '',
+            extendsion: 'Create',
+            id: null
+          }
+          console.log(fileUpload)
+          axios.post(this.baseURL + '/upload', fileUpload).then(
             (res) => {
               this.fileList.push(res.data)
-              this.fileIdList.push(res.data.id);
+              this.fileIdList.push(res.data.id)
             },
-            (error) => {}
-          );
-        };
+            (error) => {
+              console.log(error)
+              this.$toast.error('File quá nặng vui lòng chọn dưới 5 MB !')
+              fileList.splice(fileList.length - 1, 1)
+            }
+          )
+        }
       } else {
-        fileList.splice(fileList.length - 1, 1);
+        this.$toast.error('Vui lòng chọn định dạng ảnh!')
+        fileList.splice(fileList.length - 1, 1)
       }
     },
-    handleRemove(file) {
-      let index = this.fileList.findIndex(x => x.id == file.id);
-      console.log(index);
-      this.fileList.splice(index, 1);
+    handleRemove (file) {
+      let index = this.fileList.findIndex(x => x.id === file.id)
+      console.log(index)
+      this.fileList.splice(index, 1)
       // console.log(file, fileList);
     },
-    handlePreview(file, fileList) {
-      console.log(file, fileList);
+    handlePreview (file, fileList) {
+      console.log(file, fileList)
     },
-    handleSizeChange(val) {
-      this.size = val;
+    handleSizeChange (val) {
+      this.size = val
+      this.search()
     },
-    handleCurrentChange(val) {
-      this.page = val;
+    handleCurrentChange (val) {
+      this.page = val - 1
+      this.search()
     },
-    test() {
-      this.dialogFormVisible = !this.dialogFormVisible;
+    test () {
+      this.dialogFormVisible = !this.dialogFormVisible
     },
-    search() {
+    cancel () {
+      this.dialogFormVisible = !this.dialogFormVisible
+      this.categoryCreate = {}
+      this.fileList = []
+    },
+    search () {
       axios
         .get(
           this.baseURL +
@@ -244,20 +257,25 @@ export default {
             `&page=${this.page}&size=${this.size}`,
           {
             headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Content-type": "application/json",
-            },
+              'Access-Control-Allow-Origin': '*',
+              'Content-type': 'application/json'
+            }
           }
         )
         .then((response) => {
-          this.items = response.data.content;
+          this.items = response.data.content
+          this.totalElements = response.data.totalElements
         })
         .catch((e) => {
           // this.errors.push(e);
-        });
+        })
     },
-    create() {
-      this.categoryCreate.fileId = this.fileIdList;
+    create () {
+      if (this.categoryCreate.name === '' || this.categoryCreate.name == null) {
+        this.$toast.error('Không được để trống tên loại sản phẩm !')
+        return
+      }
+      this.categoryCreate.fileId = this.fileIdList
       // let formData = new FormData();
       // // for (var i = 0; i < this.listFile.length; i++) {
       // //   let file = this.listFile[i]
@@ -268,47 +286,51 @@ export default {
       axios
         .post(this.baseURL + `/categories/category`, this.categoryCreate, {
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-type": "application/json",
-          },
+            'Access-Control-Allow-Origin': '*',
+            'Content-type': 'application/json'
+          }
         })
         .then((response) => {
-          this.dialogFormVisible = false;
-          this.categoryCreate = {};
-          this.active = 'create';
-          this.search();
+          if (this.active === 'create') { this.$toast.open('Thêm mới thành công !') } else { this.$toast.open('Sửa thành công !') }
+          // this.$toastr.zs('SUCCESS MESSAGE', 'Thêm mới thành công !')
+          this.dialogFormVisible = false
+          this.categoryCreate = {}
+          this.active = 'create'
+          this.search()
+          // this.dialogFormVisible = !this.dialogFormVisibles
         })
         .catch((e) => {
           // this.errors.push(e);
-        });
-    },
+        })
+    }
   },
-  name: "Forms",
-  data() {
+  name: 'Forms',
+  data () {
     return {
       fileList: [],
-      active:'crate',
-      dialogImageUrl: "",
+      active: 'create',
+      dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      baseURL: "http://192.168.1.187:9999/wear_shop/api",
+      // baseURL: 'http://192.168.1.187:9999/wear_shop/api',
+      baseURL: 'http://localhost:9999/wear_shop/api',
       dialogFormVisible: false,
       items: [],
       fileIdList: [],
       formSearch: {
-        nameSearch: "",
+        nameSearch: ''
       },
       categoryCreate: {},
-      formLabelWidth: "120px",
+      formLabelWidth: '120px',
       editorConfig: {
         // The configuration of the editor.
       },
-
+      totalElements: 0,
       page: 0,
-      size: 10,
-    };
-  },
-};
+      size: 10
+    }
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
