@@ -27,12 +27,16 @@
       </div>
       <div>
         <el-table :data="items" style="width: 100%">
-          <el-table-column prop="id" label="Mã loại sản phẩm">
+          <el-table-column prop="id" label="Mã loại sản phẩm" width="150">
           </el-table-column>
-          <el-table-column prop="name" label="Tên loại sản phẩm">
+          <el-table-column prop="name" label="Tên loại sản phẩm" width="150">
           </el-table-column>
           <el-table-column prop="description" label="Mô tả"> </el-table-column>
-          <el-table-column prop="createAt" label="Ngày tạo"> </el-table-column>
+          <el-table-column prop="createAt" label="Ngày tạo" width="140">
+            <template slot-scope="scope">
+              <span> {{scope.row.createAt ? formatDates(`${scope.row.createAt}`) : '' }}</span>
+            </template>
+          </el-table-column>
            <el-table-column prop="updateAt" label="Ngày cập nhật"> </el-table-column>
           <el-table-column label="Thao tác">
             <template slot-scope="scope">
@@ -142,13 +146,18 @@
 
 <script>
 import axios from 'axios'
-
+import moment from "moment"
 export default {
   created () {
     this.search()
     console.log('a')
   },
   methods: {
+    formatDates(cellValue){
+      let a = new Date(cellValue)
+      const dataFormat = moment(cellValue).format("DD/MM/YYYY");
+      return dataFormat;
+    },
     handleDetail (row) {
       this.active = 'edit'
       this.fileList = []
@@ -312,8 +321,8 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      // baseURL: 'http://192.168.1.187:9999/wear_shop/api',
-      baseURL: 'http://localhost:9999/wear_shop/api',
+      baseURL: 'http://192.168.1.208:9999/wear_shop/api',
+      // baseURL: 'http://localhost:9999/wear_shop/api',
       dialogFormVisible: false,
       items: [],
       fileIdList: [],

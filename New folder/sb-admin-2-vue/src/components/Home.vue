@@ -40,6 +40,12 @@
                          <li>
                             <router-link to="/category">  <font-awesome-icon icon="fa-solid fa-address-book" /> Danh mục sản phẩm </router-link>
                         </li>
+
+                        <li>
+                            <router-link to="/product">  <font-awesome-icon icon="fa-solid fa-address-book" /> Danh sách sản phẩm </router-link>
+                        </li>
+
+
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

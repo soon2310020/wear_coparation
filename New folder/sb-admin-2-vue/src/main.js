@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from "axios";
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -13,16 +14,20 @@ import 'vue-toast-notification/dist/theme-sugar.css'
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.config.productionTip = false
-Vue.use(Element, { locale })
+Vue.use(Element, { locale, size: "medium" })
 Vue.use(CKEditor)
+axios.defaults.headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Content-type": "application/json",
+};
 Vue.use(VueToast, {
-  // One of the options
-  position: 'top-right'
-})
-/* eslint-disable no-new */
+        // One of the options
+        position: 'top-right'
+    })
+    /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    router,
+    components: { App },
+    template: '<App/>'
 })
