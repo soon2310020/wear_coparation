@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @Entity
 @Data
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,12 @@ public class User {
     @Column(name = "updated_at")
     Instant updateAt;
 
+    @Override
+    public String toString() {
+        return "{" +
+                "username:'" + username + '\'' +
+                ", email:'" + email + '\'' +
+                ", role:'" + role + '\'' +
+                '}';
+    }
 }

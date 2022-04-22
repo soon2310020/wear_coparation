@@ -9,15 +9,42 @@
             </div>
             <!-- /.col-lg-12 -->
           </div>
-
-          <b-form-group class="col-lg-6 col-md-12">
-            <b-form-input
-              id="category_name_search"
-              v-model="formSearch.nameSearch"
-              placeholder="Nhập tên loại sản phẩm..."
-            ></b-form-input>
+          <b-form-group class="col-lg-3 col-md-12">
+            <el-input
+              placeholder="Nhập tên sản phẩm.."
+              v-model="formSearch.name"
+            ></el-input>
           </b-form-group>
-          <div class="col-lg-6 col-md-12">
+          <b-form-group class="col-lg-3 col-md-12">
+            <el-select
+              v-model="formSearch.categoryIds"
+              multiple
+              placeholder="Nhập loại sản phẩm"
+            >
+              <el-option
+                v-for="item in listCategory"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </b-form-group>
+
+          <b-form-group class="col-lg-3 col-md-12">
+            <el-input
+              placeholder="Số tiền từ"
+              v-model="formSearch.fromPrice"
+            ></el-input>
+          </b-form-group>
+
+          <b-form-group class="col-lg-3 col-md-12">
+            <el-input
+              placeholder="Đến số tiền"
+              v-model="formSearch.toPrice"
+            ></el-input>
+          </b-form-group>
+          <div class="col-lg-12 col-md-12" style="text-align: center">
             <b-button type="button" variant="primary" @click="search"
               >Tìm kiếm</b-button
             >
@@ -27,19 +54,28 @@
       </div>
       <div>
         <el-table :data="items" style="width: 100%">
-          <el-table-column prop="id" label="Mã loại sản phẩm">
+          <el-table-column prop="id" label="Mã sản phẩm" width="150">
           </el-table-column>
-          <el-table-column prop="name" label="Tên loại sản phẩm">
+          <el-table-column prop="name" label="Tên sản phẩm" width="150">
           </el-table-column>
           <el-table-column prop="description" label="Mô tả"> </el-table-column>
-          <el-table-column label="Chi tiết">
+          <el-table-column prop="createAt" label="Ngày tạo" width="140">
+            <template slot-scope="scope">
+              <span>
+                {{
+                  scope.row.createAt ? formatDates(`${scope.row.createAt}`) : ""
+                }}</span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="updateAt" label="Ngày cập nhật">
+          </el-table-column>
+          <el-table-column label="Thao tác">
             <template slot-scope="scope">
               <el-button type="primary" @click="handleDetail(scope.row)"
                 >Chi tiết</el-button
               >
-              <el-button
-                type="danger"
-                @click="handleDelete(scope.row.id)"
+              <el-button type="danger" @click="handleDelete(scope.row.id)"
                 >Xóa</el-button
               >
             </template>
@@ -57,18 +93,49 @@
         </el-pagination>
       </div>
     </div>
-    <el-dialog title="Thêm mới loại sản phẩm" :visible.sync="dialogFormVisible">
-      <el-form :model="categoryCreate">
-        <el-form-item label="Tên:" :label-width="formLabelWidth">
-          <el-input v-model="categoryCreate.name" autocomplete="off"></el-input>
+    <el-dialog
+      :title="active == 'create' ? 'Thêm mới sản phẩm' : 'Chi tiết sản phẩm'"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form :model="productCreate">
+        <el-form-item label="Tiêu đề:" :label-width="formLabelWidth">
+          <el-input v-model="productCreate.title" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Kích cỡ:" :label-width="formLabelWidth">
+          <el-select
+            v-model="productCreate.size"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            placeholder="Chọn hoặc nhập size"
+          >
+            <el-option
+              v-for="(item,index) in optionsSize"
+              :key="index"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="Giá:" :label-width="formLabelWidth">
+          <el-input v-model="productCreate.price" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Tên sản phẩm:" :label-width="formLabelWidth">
+          <el-input v-model="productCreate.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="Mô tả:" :label-width="formLabelWidth">
           <ckeditor
-            v-model="categoryCreate.description"
+            v-model="productCreate.content"
             :config="editorConfig"
           ></ckeditor>
         </el-form-item>
-        <el-form-item label="Ảnh :" :label-width="formLabelWidth">
+
+        <el-form-item label="File :" :label-width="formLabelWidth">
           <el-upload
             class="upload-demo"
             action="#"
@@ -82,18 +149,13 @@
             <i slot="default" class="el-icon-plus"></i>
             <div slot="file" slot-scope="{ file }">
               <!-- {{file}} -->
+
               <img
                 class="el-upload-list__item-thumbnail"
-                :src= file.filePath
+                :src="'data:' + file.contentType + ';base64,' + file.content"
                 alt=""
               />
               <span class="el-upload-list__item-actions">
-                <span
-                  class="el-upload-list__item-preview"
-                  @click="handlePictureCardPreview(file)"
-                >
-                  <i class="el-icon-zoom-in"></i>
-                </span>
                 <span
                   v-if="!disabled"
                   class="el-upload-list__item-delete"
@@ -107,37 +169,33 @@
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
+        </el-form-item>
 
-          <!-- <el-upload
-            class="upload-demo"
-            drag
-            action
-            :auto-upload="false"
-            :on-change="handleAddFile"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            multiple
+        <el-form-item label="Loại sản phẩm:" :label-width="formLabelWidth">
+          <el-select
+            v-model="productCreate.categoryId"
+            placeholder="Nhập loại sản phẩm"
           >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">
-              Drop file here or <em>click to upload</em>
-            </div>
-            <div class="el-upload__tip" slot="tip">
-              jpg/png files with a size less than 500kb
-            </div>
-          </el-upload> -->
+            <el-option
+              v-for="item in listCategory"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="Giảm giá:" :label-width="formLabelWidth">
+          <el-input
+            v-model="productCreate.discount"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
       </el-form>
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt="" />
-      </el-dialog>
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt="" />
-      </el-dialog>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Hủy</el-button>
-        <el-button type="primary" @click="create">Lưu</el-button>
+        <el-button @click="cancel">Hủy</el-button>
+        <el-button type="primary" @click="createProduct">Lưu</el-button>
       </span>
     </el-dialog>
   </div>
@@ -145,21 +203,27 @@
 
 <script>
 import axios from 'axios'
-
+import moment from 'moment'
 export default {
   created () {
-    this.search()
+    this.getInitForm()
     console.log('a')
+    this.search()
   },
   methods: {
+    formatDates (cellValue) {
+      // let a = new Date(cellValue)
+      const dataFormat = moment(cellValue).format('DD/MM/YYYY')
+      return dataFormat
+    },
     handleDetail (row) {
       this.active = 'edit'
       this.fileList = []
       this.fileIdList = []
       this.dialogFormVisible = true
-      this.categoryCreate = Object.assign({}, row)
-      if (this.categoryCreate.file != null) {
-        let array = this.categoryCreate.file.trim().split(' ')
+      this.productCreate = Object.assign({}, row)
+      if (this.productCreate.file != null) {
+        let array = this.productCreate.file.trim().split(' ')
         console.log(array)
         array.forEach((element) => {
           axios.get(this.baseURL + `/${element}`).then(
@@ -176,8 +240,16 @@ export default {
     },
     handleDelete (id) {
       axios.delete(this.baseURL + '/categories/category/' + id).then(
-        (res) => { this.search() },
-        (error) => { console.log(error) }
+        (res) => {
+          this.$toast.open('Xóa sản phẩm ' + id + ' thành công !')
+          this.search()
+        },
+        (error) => {
+          console.log(error)
+          this.$toast.error(
+            'Tồn tại sản phẩm có loại sản phẩm trên không thể xóa !'
+          )
+        }
       )
     },
     handleAddFile (file, fileList) {
@@ -210,15 +282,18 @@ export default {
             },
             (error) => {
               console.log(error)
+              this.$toast.error('File quá nặng vui lòng chọn dưới 5 MB !')
+              fileList.splice(fileList.length - 1, 1)
             }
           )
         }
       } else {
+        this.$toast.error('Vui lòng chọn định dạng ảnh!')
         fileList.splice(fileList.length - 1, 1)
       }
     },
     handleRemove (file) {
-      let index = this.fileList.findIndex(x => x.id === file.id)
+      let index = this.fileList.findIndex((x) => x.id === file.id)
       console.log(index)
       this.fileList.splice(index, 1)
       // console.log(file, fileList);
@@ -237,20 +312,33 @@ export default {
     test () {
       this.dialogFormVisible = !this.dialogFormVisible
     },
-    search () {
+    cancel () {
+      this.dialogFormVisible = !this.dialogFormVisible
+      this.productCreate = {}
+      this.fileList = []
+    },
+    getInitForm () {
       axios
-        .get(
-          this.baseURL +
-            `/categories/category?name=` +
-            this.formSearch.nameSearch +
-            `&page=${this.page}&size=${this.size}`,
-          {
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Content-type': 'application/json'
-            }
-          }
-        )
+        .get(this.baseURL + `/categories/category?name=&page=0&size=1000`)
+        .then((response) => {
+          this.listCategory = response.data.content
+        })
+        .catch((e) => {
+          // this.errors.push(e);
+        })
+    },
+
+    search () {
+      this.formSearch.fromPrice =
+        this.formSearch.fromPrice == null
+          ? null
+          : parseInt(this.formSearch.fromPrice)
+      this.formSearch.toPrice =
+        this.formSearch.toPrice == null
+          ? null
+          : parseInt(this.formSearch.toPrice)
+      axios
+        .post(this.baseURL + `/product/search-product`, this.formSearch)
         .then((response) => {
           this.items = response.data.content
           this.totalElements = response.data.totalElements
@@ -259,26 +347,29 @@ export default {
           // this.errors.push(e);
         })
     },
-    create () {
-      this.categoryCreate.fileId = this.fileIdList
-      // let formData = new FormData();
-      // // for (var i = 0; i < this.listFile.length; i++) {
-      // //   let file = this.listFile[i]
-      // //   formData.append('files[' + i + ']', file)
-      // // }
-      // formData.append("files", this.fileIdList);
-      // formData.append("req", this.categoryCreate);
+
+    createProduct () {
+      if (this.productCreate.name === '' || this.productCreate.name == null) {
+        this.$toast.error('Không được để trống tên sản phẩm !')
+        return
+      }
+      this.productCreate.file = this.fileIdList
       axios
-        .post(this.baseURL + `/categories/category`, this.categoryCreate, {
+        .post(this.baseURL + `/product/product`, this.productCreate, {
           headers: {
             'Access-Control-Allow-Origin': '*',
             'Content-type': 'application/json'
           }
         })
         .then((response) => {
-          // this.$toastr.s('SUCCESS MESSAGE', 'Thêm mới thành công !')
+          if (this.active === 'create') {
+            this.$toast.open('Thêm mới thành công !')
+          } else {
+            this.$toast.open('Sửa thành công !')
+          }
+          // this.$toastr.zs('SUCCESS MESSAGE', 'Thêm mới thành công !')
           this.dialogFormVisible = false
-          this.categoryCreate = {}
+          this.productCreate = {}
           this.active = 'create'
           this.search()
           // this.dialogFormVisible = !this.dialogFormVisibles
@@ -296,21 +387,27 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      // baseURL: 'http://192.168.1.187:9999/wear_shop/api',
-      baseURL: 'http://localhost:9999/wear_shop/api',
+      baseURL: 'http://192.168.1.208:9999/wear_shop/api',
+      // baseURL: 'http://localhost:9999/wear_shop/api',
       dialogFormVisible: false,
       items: [],
+      optionsSize: ['M', 'L', 'XL'],
       fileIdList: [],
+      listCategory: [],
       formSearch: {
-        nameSearch: ''
+        name: '',
+        categoryIds: [],
+        fromPrice: null,
+        toPrice: null
       },
-      categoryCreate: {},
+      productCreate: {},
       formLabelWidth: '120px',
       editorConfig: {
         // The configuration of the editor.
       },
       totalElements: 0,
       page: 0,
+
       size: 10
     }
   }
