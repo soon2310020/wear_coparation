@@ -57,9 +57,22 @@
         <el-table :data="items" style="width: 100%">
           <el-table-column prop="id" label="Mã sản phẩm" width="150">
           </el-table-column>
-          <el-table-column prop="name" label="Tên sản phẩm" width="150">
+          <el-table-column prop="title" label="Tên sản phẩm" width="150">
           </el-table-column>
-          <el-table-column prop="description" label="Mô tả"> </el-table-column>
+          <el-table-column prop="" label="Ảnh">
+            <template slot-scope="scope">
+              <img
+                class="custum-image-table"
+                v-if="scope.row.file != null"
+                :src="
+                  'data:' +
+                  scope.row.contentType +
+                  ';base64,' +
+                  scope.row.fileBase64
+                "
+              />
+            </template>
+          </el-table-column>
           <el-table-column prop="createAt" label="Ngày tạo" width="140">
             <template slot-scope="scope">
               <span>
@@ -70,6 +83,13 @@
             </template>
           </el-table-column>
           <el-table-column prop="updateAt" label="Ngày cập nhật">
+            <template slot-scope="scope">
+              <span>
+                {{
+                  scope.row.createAt ? formatDates(`${scope.row.createAt}`) : ""
+                }}</span
+              >
+            </template>
           </el-table-column>
           <el-table-column label="Thao tác">
             <template slot-scope="scope">
@@ -99,7 +119,7 @@
       :visible.sync="dialogFormVisible"
     >
       <el-form :model="productCreate">
-        <el-form-item label="Tiêu đề:" :label-width="formLabelWidth">
+        <el-form-item label="Tên sản phẩm:" :label-width="formLabelWidth">
           <el-input v-model="productCreate.title" autocomplete="off"></el-input>
         </el-form-item>
 
@@ -113,7 +133,7 @@
             placeholder="Chọn hoặc nhập size"
           >
             <el-option
-              v-for="(item,index) in optionsSize"
+              v-for="(item, index) in optionsSize"
               :key="index"
               :label="item"
               :value="item"
@@ -123,12 +143,14 @@
         </el-form-item>
 
         <el-form-item label="Giá:" :label-width="formLabelWidth">
-          <el-input v-model="productCreate.price" autocomplete="off"></el-input>
+          <el-input
+            @keypress.native="formatInput($event)"
+            @input="NumberToString(productCreate.price)"
+            v-model="productCreate.price"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
 
-        <el-form-item label="Tên sản phẩm:" :label-width="formLabelWidth">
-          <el-input v-model="productCreate.name" autocomplete="off"></el-input>
-        </el-form-item>
         <el-form-item label="Mô tả:" :label-width="formLabelWidth">
           <ckeditor
             v-model="productCreate.content"
@@ -205,6 +227,8 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import { format, fromUnixTime } from "date-fns";
+import _ from "lodash";
 export default {
   created() {
     this.getInitForm();
@@ -213,8 +237,8 @@ export default {
   },
   methods: {
     formatDates(cellValue) {
-      let a = new Date(cellValue);
-      const dataFormat = moment(cellValue).format("DD/MM/YYYY");
+      // let a = new Date(cellValue);
+      const dataFormat = format(fromUnixTime(cellValue), "dd/MM/yyyy");
       return dataFormat;
     },
     handleDetail(row) {
@@ -222,9 +246,16 @@ export default {
       this.fileList = [];
       this.fileIdList = [];
       this.dialogFormVisible = true;
-      this.productCreate = Object.assign({}, row);
-      if (this.productCreate.file != null) {
-        let array = this.productCreate.file.trim().split(" ");
+      // this.productCreate = Object.assign({}, row);
+      this.productCreate.id = row.id;
+      this.productCreate.title = row.title;
+      this.productCreate.price = this.NumberToString(row.price);
+      this.productCreate.content = row.content;
+      this.productCreate.discount = row.discount;
+      this.productCreate.size = row.size.trim().split(" ");
+      this.productCreate.categoryId = row.category.id;
+      if (row.file != null) {
+        let array = row.file.trim().split(" ");
         console.log(array);
         array.forEach((element) => {
           axios.get(this.baseURL + `/${element}`).then(
@@ -240,7 +271,7 @@ export default {
       }
     },
     handleDelete(id) {
-      axios.delete(this.baseURL + "/categories/category/" + id).then(
+      axios.delete(this.baseURL + "/product/" + id).then(
         (res) => {
           this.$toast.open("Xóa sản phẩm " + id + " thành công !");
           this.search();
@@ -330,6 +361,7 @@ export default {
     },
 
     search() {
+      this.items = [];
       this.formSearch.fromPrice =
         this.formSearch.fromPrice == null
           ? null
@@ -339,9 +371,48 @@ export default {
           ? null
           : parseInt(this.formSearch.toPrice);
       axios
-        .post(this.baseURL + `/product/search-product`, this.formSearch)
+        .post(
+          this.baseURL +
+            `/product/search-product?page=${this.page}&size=${this.size}`,
+          this.formSearch
+        )
         .then((response) => {
-          this.items = response.data.content;
+          const awaitFun = (content) => {
+            const promises = content.map(async (e, index) => {
+              if (e.file != null) {
+                let array = e.file.trim().split(" ");
+                console.log(array);
+                await axios.get(this.baseURL + `/${array[0]}`).then(
+                  (res) => {
+                    e.fileBase64 = res.data.content;
+                    e.contentType = res.data.contentType;
+                  },
+                  (error) => {
+                    console.log(error);
+                  }
+                );
+              }
+            });
+            return Promise.all(promises);
+          };
+          // this.items = ;
+          let newObj = _.cloneDeep(response.data.content);
+          awaitFun(newObj).then(() => {
+            this.items = newObj;
+          });
+
+          // response.data.content.forEach((e, index) => {
+          //   let array = e.file.trim().split(" ");
+          //   axios.get(this.baseURL + `/${array[0]}`).then(
+          //     (res) => {
+          //       this.items[index].fileBase64 = res.data.content;
+          //       this.items[index].contentType = res.data.contentType;
+          //     },
+          //     (error) => {
+          //       console.log(error);
+          //     }
+          //   );
+          // });
           this.totalElements = response.data.totalElements;
         })
         .catch((e) => {
@@ -350,18 +421,14 @@ export default {
     },
 
     createProduct() {
-      if (this.productCreate.name === "" || this.productCreate.name == null) {
+      if (this.productCreate.title === "" || this.productCreate.title == null) {
         this.$toast.error("Không được để trống tên sản phẩm !");
         return;
       }
+      this.productCreate.price = this.stringToNumber(this.productCreate.price)
       this.productCreate.file = this.fileIdList;
       axios
-        .post(this.baseURL + `/product/product`, this.productCreate, {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-type": "application/json",
-          },
-        })
+        .post(this.baseURL + `/product/product`, this.productCreate)
         .then((response) => {
           if (this.active === "create") {
             this.$toast.open("Thêm mới thành công !");
@@ -379,6 +446,42 @@ export default {
           // this.errors.push(e);
         });
     },
+
+    formatInput(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (
+        (charCode > 31 && (charCode < 48 || charCode > 57)) ||
+        charCode == 32
+      ) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
+    NumberToString(value, k) {
+      if (value == null || value == "") {
+        return;
+      } else {
+        value = this.stringToNumber(value);
+        if (!isNaN(value)) {
+          let val = (value / 1).toFixed().replace(".", ",");
+          let string = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          this.productCreate.price = string;
+          return string;
+        } else return;
+      }
+    },
+    stringToNumber(string) {
+      if (string == null || string == "") {
+        return null;
+      } else {
+        if (typeof string == "number") {
+          return string;
+        }
+        return parseInt(string.replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g, ""));
+      }
+    },
   },
   name: "Forms",
   data() {
@@ -392,16 +495,24 @@ export default {
       // baseURL: 'http://localhost:9999/wear_shop/api',
       dialogFormVisible: false,
       items: [],
-      optionsSize:['M','L','XL'],
+      optionsSize: ["M", "L", "XL"],
       fileIdList: [],
       listCategory: [],
       formSearch: {
-        name: "",
+        name: null,
         categoryIds: [],
         fromPrice: null,
         toPrice: null,
       },
-      productCreate: {},
+      productCreate: {
+        id: null,
+        title: null,
+        price: null,
+        content: null,
+        discount: null,
+        size: null,
+        categoryId: null,
+      },
       formLabelWidth: "120px",
       editorConfig: {
         // The configuration of the editor.
@@ -418,5 +529,8 @@ export default {
 <style >
 .upload-demo .el-upload__input {
   display: none !important;
+}
+.custum-image-table {
+  width: 200px;
 }
 </style>

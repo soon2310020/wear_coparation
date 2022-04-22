@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from "axios";
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import DashBoard from '@/components/DashBoard'
@@ -49,10 +50,31 @@ const router = new Router({
                 { path: '/blank', name: 'Blank', component: Blank }
             ]
         },
-        { path: '/public/login', name: 'Login', component: Login }
+        { path: '/login', name: 'Login', component: Login }
 
     ]
 })
+router.beforeEach((to, from, next) => {
+    console.log(to)
+    const publicPages = ['/login', '/register', '/home'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = window.sessionStorage.getItem('user')
+    if (loggedIn) {
+        axios.defaults.headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Content-type": "application/json",
+            "Authorization": loggedIn,
+        };
+    }
+    if (authRequired && !loggedIn) {
 
-router.replace({ path: '/dashborad', redirect: '/dashborad' })
+        let loc = window.location;
+        const port = loc.port ? ':' + loc.port : '';
+        loc.href = `//${loc.hostname}${port}/#/login`;
+        next();
+    } else {
+        next();
+    }
+});
+// router.replace({ path: '/dashborad', redirect: '/dashborad' })
 export default router

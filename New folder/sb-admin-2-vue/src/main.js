@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from "axios";
+import * as config from "./axios.config";
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -16,10 +17,7 @@ Vue.use(IconsPlugin)
 Vue.config.productionTip = false
 Vue.use(Element, { locale, size: "medium" })
 Vue.use(CKEditor)
-axios.defaults.headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Content-type": "application/json",
-};
+config.initVueApp(Vue)
 Vue.use(VueToast, {
         // One of the options
         position: 'top-right'

@@ -37,7 +37,11 @@
               <span> {{scope.row.createAt ? formatDates(`${scope.row.createAt}`) : '' }}</span>
             </template>
           </el-table-column>
-           <el-table-column prop="updateAt" label="Ngày cập nhật"> </el-table-column>
+           <el-table-column prop="updateAt" label="Ngày cập nhật">
+             <template slot-scope="scope">
+              <span> {{scope.row.updateAt ? formatDates(`${scope.row.updateAt}`) : '' }}</span>
+            </template>
+           </el-table-column>
           <el-table-column label="Thao tác">
             <template slot-scope="scope">
               <el-button type="primary" @click="handleDetail(scope.row)"
@@ -147,6 +151,8 @@
 <script>
 import axios from 'axios'
 import moment from "moment"
+import { format, fromUnixTime } from "date-fns";
+
 export default {
   created () {
     this.search()
@@ -154,8 +160,8 @@ export default {
   },
   methods: {
     formatDates(cellValue){
-      let a = new Date(cellValue)
-      const dataFormat = moment(cellValue).format("DD/MM/YYYY");
+      // let a = new Date(cellValue);
+      const dataFormat = format(fromUnixTime(cellValue), "dd/MM/yyyy");
       return dataFormat;
     },
     handleDetail (row) {
