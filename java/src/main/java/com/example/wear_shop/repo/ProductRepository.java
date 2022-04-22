@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProductRepository  extends JpaRepository<Product,Long> {
     @Query("select distinct p from Product p inner join p.category c where " +
             " (coalesce(:cId) is null or c.id in :cId ) and " +
-            " ( :name is null or p.title = :name) and " +
+            " ( :name is null or p.title like :name) and " +
             " ( :toPrice is null or p.price <= :toPrice) and " +
              "( :fromPrice is null or p.price >= :fromPrice)")
     Page<Product> searchProductBy(@Param("name") String name,

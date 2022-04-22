@@ -25,6 +25,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> getProduct(ProductReqDTO productReqDTO, Pageable pageable) {
+
+
+
         Page<Product> products = productRepository.searchProductBy(productReqDTO.getName(),productReqDTO.getFromPrice(),productReqDTO.getToPrice(),productReqDTO.getCategoryIds(),pageable);
         return products;
     }
@@ -33,7 +36,6 @@ public class ProductServiceImpl implements ProductService {
     public void create(ProductCreateReqDTO createReqDTO) {
         Product product = new Product();
         product.setId(createReqDTO.getId());
-        product.setAvatar(createReqDTO.getAvatar());
         product.setUpdateAt(Instant.now());
         product.setContent(createReqDTO.getContent());
         Category category =categoryRepository.getById(createReqDTO.getCategoryId());
@@ -56,7 +58,6 @@ public class ProductServiceImpl implements ProductService {
             }
             product.setSize(size);
         }
-        product.setAvatar(createReqDTO.getAvatar());
         product.setPrice(createReqDTO.getPrice());
         product.setTitle(createReqDTO.getTitle());
         product.setDiscount(createReqDTO.getDiscount());

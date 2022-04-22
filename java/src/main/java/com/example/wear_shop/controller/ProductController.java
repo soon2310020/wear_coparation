@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -25,7 +27,6 @@ public class ProductController {
     {
        productService.create(product);
     }
-    @Secured("ROLE_ADMIN")
     @PostMapping("/search-product")
     public ResponseEntity<Page<Product>> searchProduct(@RequestBody ProductReqDTO req, Pageable pageable)
     {
@@ -37,10 +38,21 @@ public class ProductController {
 
     public void deleteProduct(@PathVariable("id") Long id) throws Exception {
         Product product = productRepository.getById(id);
+        productRepository.delete(product);
         if (product==null)
         {
             throw new Exception();
         }
+    }
+    @GetMapping("/{id}/{size}")
+    public ResponseEntity<Product> getProduct(@PathVariable(required = false,name = "size")String size, @PathVariable(name = "id") Long id)
+    {
+        Product product = productRepository.getById(id);
+        if (!size.isEmpty()&& Objects.isNull(product))
+        {
+            product.setSize(size);
+        }
+        return ResponseEntity.ok(product);
     }
 
 

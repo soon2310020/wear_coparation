@@ -19,14 +19,12 @@ public class Product {
     @Column(name = "size")
     String size;
 
-    @Column(name = "color")
-    String color;
 
     @Column(name = "price")
     Long price;
 
     @Column(name = "status")
-    int status;
+    Long status;
 
     @Column(name = "content")
     String content;
@@ -37,8 +35,6 @@ public class Product {
     @Column(name = "updated_at")
     Instant updateAt;
 
-    @Column(name = "avatar")
-    Long avatar;
 
     @Column(name ="file_id")
     String file;

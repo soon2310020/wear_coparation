@@ -43,7 +43,7 @@ public class ExceptionHandleController {
     }
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
     public ResponseEntity<MessageDTO> handleAccessDeniedEx(
-           AccessDeniedException ex ) {
+            org.springframework.security.access.AccessDeniedException ex ) {
         ex.printStackTrace();
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setMessages(ex.getMessage());

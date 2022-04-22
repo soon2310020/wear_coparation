@@ -42,6 +42,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Page<Category> getListCategory(String name, Pageable pageable) {
         Page<Category> categories = categoryRepository.getCategoryByName(name,pageable );
+        for (Category c:categories.getContent())
+        {
+            c.setCreateAt(c.getCreateAt());
+        }
         return categories;
     }
 }
