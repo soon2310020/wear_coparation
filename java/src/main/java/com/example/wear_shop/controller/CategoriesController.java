@@ -30,6 +30,7 @@ public class CategoriesController {
     }
 
     @GetMapping("/category")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Page<Category>> getListCategory(@RequestParam(required = false) String name, Pageable pageable)
     {
        Page<Category> categories = categoryService.getListCategory(name,pageable);

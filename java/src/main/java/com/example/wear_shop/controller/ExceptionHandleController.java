@@ -41,7 +41,7 @@ public class ExceptionHandleController {
         ErrorDto errorDto = new ErrorDto(HttpStatus.NOT_FOUND, "Not found", e.getMessage());
         return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
-    @ExceptionHandler(AccessDeniedException.class)
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
     public ResponseEntity<MessageDTO> handleAccessDeniedEx(
            AccessDeniedException ex ) {
         ex.printStackTrace();
