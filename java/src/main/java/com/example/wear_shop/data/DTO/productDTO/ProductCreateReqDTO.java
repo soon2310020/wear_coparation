@@ -5,43 +5,21 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class ProductCreateReqDTO {
-    private String name;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    String name;
     Long id;
-
-    @Column(name = "title")
     String title;
-
-    @Column(name = "size")
-    String size;
-
-    @Column(name = "color")
+    List<String> size;
     String color;
-
-    @Column(name = "price")
-    Double price;
-
-    @Column(name = "status")
+    Long price;
+    String content;
     int status;
-
-    @Column(name = "created_at")
-    Instant createAt;
-
-    @Column(name = "updated_at")
-    Instant updateAt;
-
-    @Column(name = "avatar")
     Long avatar;
-
-    @Column(name ="file_id")
-    String file;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    Category category;
+    List<Long> file;
+    Long categoryId;
+    Long discount;
 
 }

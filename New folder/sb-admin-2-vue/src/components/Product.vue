@@ -9,7 +9,6 @@
             </div>
             <!-- /.col-lg-12 -->
           </div>
-
           <b-form-group class="col-lg-3 col-md-12">
             <el-input
               placeholder="Nhập tên sản phẩm.."
@@ -230,10 +229,10 @@ import moment from "moment";
 import { format, fromUnixTime } from "date-fns";
 import _ from "lodash";
 export default {
-  created() {
-    this.getInitForm();
-    console.log("a");
-    this.search();
+  created () {
+    this.getInitForm()
+    console.log('a')
+    this.search()
   },
   methods: {
     formatDates(cellValue) {
@@ -260,104 +259,104 @@ export default {
         array.forEach((element) => {
           axios.get(this.baseURL + `/${element}`).then(
             (res) => {
-              this.fileList.push(res.data);
-              this.fileIdList.push(res.data.id);
+              this.fileList.push(res.data)
+              this.fileIdList.push(res.data.id)
             },
             (error) => {
-              console.log(error);
+              console.log(error)
             }
-          );
-        });
+          )
+        })
       }
     },
     handleDelete(id) {
       axios.delete(this.baseURL + "/product/" + id).then(
         (res) => {
-          this.$toast.open("Xóa sản phẩm " + id + " thành công !");
-          this.search();
+          this.$toast.open('Xóa sản phẩm ' + id + ' thành công !')
+          this.search()
         },
         (error) => {
-          console.log(error);
+          console.log(error)
           this.$toast.error(
-            "Tồn tại sản phẩm có loại sản phẩm trên không thể xóa !"
-          );
+            'Tồn tại sản phẩm có loại sản phẩm trên không thể xóa !'
+          )
         }
-      );
+      )
     },
-    handleAddFile(file, fileList) {
+    handleAddFile (file, fileList) {
       if (
-        file.name.includes("jpg") ||
-        file.name.includes("jpeg") ||
-        file.name.includes("png")
+        file.name.includes('jpg') ||
+        file.name.includes('jpeg') ||
+        file.name.includes('png')
       ) {
         // this.fileList = []
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file.raw);
+        const fileReader = new FileReader()
+        fileReader.readAsDataURL(file.raw)
         fileReader.onload = (e) => {
-          const dataRaw = e.target.result;
+          const dataRaw = e.target.result
           const base64Data = dataRaw.substr(
-            dataRaw.indexOf("base64,") + "base64,".length
-          );
+            dataRaw.indexOf('base64,') + 'base64,'.length
+          )
           const fileUpload = {
             content: base64Data,
             contentType: file.raw.type,
             name: file.name,
-            url: "",
-            extendsion: "Create",
-            id: null,
-          };
-          console.log(fileUpload);
-          axios.post(this.baseURL + "/upload", fileUpload).then(
+            url: '',
+            extendsion: 'Create',
+            id: null
+          }
+          console.log(fileUpload)
+          axios.post(this.baseURL + '/upload', fileUpload).then(
             (res) => {
-              this.fileList.push(res.data);
-              this.fileIdList.push(res.data.id);
+              this.fileList.push(res.data)
+              this.fileIdList.push(res.data.id)
             },
             (error) => {
-              console.log(error);
-              this.$toast.error("File quá nặng vui lòng chọn dưới 5 MB !");
-              fileList.splice(fileList.length - 1, 1);
+              console.log(error)
+              this.$toast.error('File quá nặng vui lòng chọn dưới 5 MB !')
+              fileList.splice(fileList.length - 1, 1)
             }
-          );
-        };
+          )
+        }
       } else {
-        this.$toast.error("Vui lòng chọn định dạng ảnh!");
-        fileList.splice(fileList.length - 1, 1);
+        this.$toast.error('Vui lòng chọn định dạng ảnh!')
+        fileList.splice(fileList.length - 1, 1)
       }
     },
-    handleRemove(file) {
-      let index = this.fileList.findIndex((x) => x.id === file.id);
-      console.log(index);
-      this.fileList.splice(index, 1);
+    handleRemove (file) {
+      let index = this.fileList.findIndex((x) => x.id === file.id)
+      console.log(index)
+      this.fileList.splice(index, 1)
       // console.log(file, fileList);
     },
-    handlePreview(file, fileList) {
-      console.log(file, fileList);
+    handlePreview (file, fileList) {
+      console.log(file, fileList)
     },
-    handleSizeChange(val) {
-      this.size = val;
-      this.search();
+    handleSizeChange (val) {
+      this.size = val
+      this.search()
     },
-    handleCurrentChange(val) {
-      this.page = val - 1;
-      this.search();
+    handleCurrentChange (val) {
+      this.page = val - 1
+      this.search()
     },
-    test() {
-      this.dialogFormVisible = !this.dialogFormVisible;
+    test () {
+      this.dialogFormVisible = !this.dialogFormVisible
     },
-    cancel() {
-      this.dialogFormVisible = !this.dialogFormVisible;
-      this.productCreate = {};
-      this.fileList = [];
+    cancel () {
+      this.dialogFormVisible = !this.dialogFormVisible
+      this.productCreate = {}
+      this.fileList = []
     },
-    getInitForm() {
+    getInitForm () {
       axios
         .get(this.baseURL + `/categories/category?name=&page=0&size=1000`)
         .then((response) => {
-          this.listCategory = response.data.content;
+          this.listCategory = response.data.content
         })
         .catch((e) => {
           // this.errors.push(e);
-        });
+        })
     },
 
     search() {
@@ -365,11 +364,11 @@ export default {
       this.formSearch.fromPrice =
         this.formSearch.fromPrice == null
           ? null
-          : parseInt(this.formSearch.fromPrice);
+          : parseInt(this.formSearch.fromPrice)
       this.formSearch.toPrice =
         this.formSearch.toPrice == null
           ? null
-          : parseInt(this.formSearch.toPrice);
+          : parseInt(this.formSearch.toPrice)
       axios
         .post(
           this.baseURL +
@@ -417,7 +416,7 @@ export default {
         })
         .catch((e) => {
           // this.errors.push(e);
-        });
+        })
     },
 
     createProduct() {
@@ -430,16 +429,16 @@ export default {
       axios
         .post(this.baseURL + `/product/product`, this.productCreate)
         .then((response) => {
-          if (this.active === "create") {
-            this.$toast.open("Thêm mới thành công !");
+          if (this.active === 'create') {
+            this.$toast.open('Thêm mới thành công !')
           } else {
-            this.$toast.open("Sửa thành công !");
+            this.$toast.open('Sửa thành công !')
           }
           // this.$toastr.zs('SUCCESS MESSAGE', 'Thêm mới thành công !')
-          this.dialogFormVisible = false;
-          this.productCreate = {};
-          this.active = "create";
-          this.search();
+          this.dialogFormVisible = false
+          this.productCreate = {}
+          this.active = 'create'
+          this.search()
           // this.dialogFormVisible = !this.dialogFormVisibles
         })
         .catch((e) => {
@@ -483,15 +482,15 @@ export default {
       }
     },
   },
-  name: "Forms",
-  data() {
+  name: 'Forms',
+  data () {
     return {
       fileList: [],
-      active: "create",
-      dialogImageUrl: "",
+      active: 'create',
+      dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      baseURL: "http://192.168.1.208:9999/wear_shop/api",
+      baseURL: 'http://192.168.1.208:9999/wear_shop/api',
       // baseURL: 'http://localhost:9999/wear_shop/api',
       dialogFormVisible: false,
       items: [],
@@ -502,7 +501,7 @@ export default {
         name: null,
         categoryIds: [],
         fromPrice: null,
-        toPrice: null,
+        toPrice: null
       },
       productCreate: {
         id: null,
@@ -519,10 +518,11 @@ export default {
       },
       totalElements: 0,
       page: 0,
-      size: 10,
-    };
-  },
-};
+
+      size: 10
+    }
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

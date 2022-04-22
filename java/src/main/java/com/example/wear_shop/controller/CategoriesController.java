@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,7 @@ public class CategoriesController {
     }
 
     @GetMapping("/category")
+
     public ResponseEntity<Page<Category>> getListCategory(@RequestParam(required = false) String name, Pageable pageable)
     {
        Page<Category> categories = categoryService.getListCategory(name,pageable);
@@ -36,6 +38,7 @@ public class CategoriesController {
     }
 
     @GetMapping("/category/{id}")
+
     public ResponseEntity<Category> getCategory(@PathVariable(required = true) Long id)
     {
         Category category =categoryRepository.getById(id);
