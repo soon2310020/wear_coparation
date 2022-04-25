@@ -58,6 +58,9 @@
             <li>
               <router-link to="/product"> Danh sách sản phẩm </router-link>
             </li>
+             <li>
+              <router-link to="/user"> Quản lý tài khoản </router-link>
+            </li>
           </ul>
         </div>
         <!-- /.sidebar-collapse -->

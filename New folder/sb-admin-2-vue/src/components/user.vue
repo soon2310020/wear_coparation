@@ -5,46 +5,18 @@
         <b-form class="row">
           <div class="row">
             <div class="col-lg-12">
-              <h1 class="page-header">Quản lý sản phẩm</h1>
+              <h1 class="page-header">Quản lý tài khoản</h1>
             </div>
             <!-- /.col-lg-12 -->
           </div>
-          <b-form-group class="col-lg-3 col-md-12">
+          <b-form-group class="col-lg-6 col-md-12">
             <el-input
-              placeholder="Nhập tên sản phẩm.."
+              placeholder="Nhập username."
               v-model="formSearch.name"
             ></el-input>
           </b-form-group>
-          <b-form-group class="col-lg-3 col-md-12">
-            <el-select
-              v-model="formSearch.categoryIds"
-              multiple
-              placeholder="Nhập loại sản phẩm"
-            >
-              <el-option
-                v-for="item in listCategory"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </b-form-group>
 
-          <b-form-group class="col-lg-3 col-md-12">
-            <el-input
-              placeholder="Số tiền từ"
-              v-model="formSearch.fromPrice"
-            ></el-input>
-          </b-form-group>
-
-          <b-form-group class="col-lg-3 col-md-12">
-            <el-input
-              placeholder="Đến số tiền"
-              v-model="formSearch.toPrice"
-            ></el-input>
-          </b-form-group>
-          <div class="col-lg-12 col-md-12" style="text-align: center">
+          <div class="col-lg-6 col-md-12" style="text-align: center">
             <b-button type="button" variant="primary" @click="search"
               >Tìm kiếm</b-button
             >
@@ -54,23 +26,9 @@
       </div>
       <div>
         <el-table :data="items" style="width: 100%">
-          <el-table-column prop="id" label="Mã sản phẩm" width="150">
+          <el-table-column prop="id" label="Mã tài khoản" width="150">
           </el-table-column>
-          <el-table-column prop="title" label="Tên sản phẩm" width="150">
-          </el-table-column>
-          <el-table-column prop="" label="Ảnh">
-            <template slot-scope="scope">
-              <img
-                class="custum-image-table"
-                v-if="scope.row.file != null"
-                :src="
-                  'data:' +
-                  scope.row.contentType +
-                  ';base64,' +
-                  scope.row.fileBase64
-                "
-              />
-            </template>
+          <el-table-column prop="username" label="Tên tài khoản" width="150">
           </el-table-column>
           <el-table-column prop="createAt" label="Ngày tạo" width="140">
             <template slot-scope="scope">
@@ -114,7 +72,7 @@
       </div>
     </div>
     <el-dialog
-      :title="active == 'create' ? 'Thêm mới sản phẩm' : 'Chi tiết sản phẩm'"
+      :title="active == 'create' ? 'Thêm mới tài khoản' : 'Chi tiết tài khoản'"
       :visible.sync="dialogFormVisible"
     >
       <el-form :model="productCreate">

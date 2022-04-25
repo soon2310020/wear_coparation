@@ -27,7 +27,6 @@ public class User {
 
     @Column(name = "updated_at")
     Instant updateAt;
-
     @Override
     public String toString() {
         return "{" +

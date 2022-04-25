@@ -5,7 +5,7 @@
         <b-form class="row">
           <div class="row">
             <div class="col-lg-12">
-              <h1 class="page-header">Loại sản phẩm</h1>
+              <h1 class="page-header">Quản lý danh mục sản phẩm</h1>
             </div>
             <!-- /.col-lg-12 -->
           </div>
@@ -150,8 +150,8 @@
 
 <script>
 import axios from 'axios'
-import moment from "moment"
-import { format, fromUnixTime } from "date-fns";
+import moment from 'moment'
+import { format, fromUnixTime } from 'date-fns'
 
 export default {
   created () {
@@ -159,10 +159,10 @@ export default {
     console.log('a')
   },
   methods: {
-    formatDates(cellValue){
+    formatDates (cellValue) {
       // let a = new Date(cellValue);
-      const dataFormat = format(fromUnixTime(cellValue), "dd/MM/yyyy");
-      return dataFormat;
+      const dataFormat = format(fromUnixTime(cellValue), 'dd/MM/yyyy')
+      return dataFormat
     },
     handleDetail (row) {
       this.active = 'edit'
@@ -242,6 +242,7 @@ export default {
       let index = this.fileList.findIndex(x => x.id === file.id)
       console.log(index)
       this.fileList.splice(index, 1)
+      this.fileIdList.splice(index, 1)
       // console.log(file, fileList);
     },
     handlePreview (file, fileList) {
@@ -327,8 +328,8 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      baseURL: 'http://192.168.1.208:9999/wear_shop/api',
-      // baseURL: 'http://localhost:9999/wear_shop/api',
+      // baseURL: 'http://192.168.1.208:9999/wear_shop/api',
+      baseURL: 'http://localhost:9999/wear_shop/api',
       dialogFormVisible: false,
       items: [],
       fileIdList: [],
