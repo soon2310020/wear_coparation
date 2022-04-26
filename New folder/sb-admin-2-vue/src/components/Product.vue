@@ -259,7 +259,7 @@ export default {
         let array = row.file.trim().split(' ')
         console.log(array)
         array.forEach((element) => {
-          axios.get(this.baseURL + `/${element}`).then(
+          axios.get(this.baseURL + `/file/${element}`).then(
             (res) => {
               this.fileList.push(res.data)
               this.fileIdList.push(res.data.id)
@@ -308,7 +308,7 @@ export default {
             id: null
           }
           console.log(fileUpload)
-          axios.post(this.baseURL + '/upload', fileUpload).then(
+          axios.post(this.baseURL + '/file/upload', fileUpload).then(
             (res) => {
               this.fileList.push(res.data)
               this.fileIdList.push(res.data.id)
@@ -385,7 +385,7 @@ export default {
               if (e.file != null) {
                 let array = e.file.trim().split(' ')
                 console.log(array)
-                await axios.get(this.baseURL + `/${array[0]}`).then(
+                await axios.get(this.baseURL + `/file/${array[0]}`).then(
                   (res) => {
                     e.fileBase64 = res.data.content
                     e.contentType = res.data.contentType
@@ -399,7 +399,7 @@ export default {
             return Promise.all(promises)
           }
           // this.items = ;
-          // let newObj = _.cloneDeep(response.data.content)
+          let newObj = _.cloneDeep(response.data.content)
           awaitFun(newObj).then(() => {
             this.items = newObj
           })

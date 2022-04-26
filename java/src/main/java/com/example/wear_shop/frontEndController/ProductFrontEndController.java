@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @RestController
@@ -25,8 +26,7 @@ public class ProductFrontEndController {
     private CategoryFileMapping categoryFileMapping;
 
     @PostMapping("/search-product")
-    public ResponseEntity<Page<Product>> searchProduct(@RequestBody ProductReqDTO req, Pageable pageable)
-    {
+    public ResponseEntity<Page<Product>> searchProduct(@RequestBody ProductReqDTO req, Pageable pageable) throws IOException {
         Page<Product> products = productService.getProduct(req,pageable);
         categoryFileMapping.mappingFileForProduct(products.getContent());
         return ResponseEntity.ok(products);

@@ -36,7 +36,7 @@ public class Category {
     private String file;
 
     @Transient
-    private List<String> base64File;
+    private List<byte[]> base64File;
 
 
 }

@@ -174,7 +174,7 @@ export default {
         let array = this.categoryCreate.file.trim().split(' ')
         console.log(array)
         array.forEach((element) => {
-          axios.get(this.baseURL + `/${element}`).then(
+          axios.get(this.baseURL + `/file/${element}`).then(
             (res) => {
               this.fileList.push(res.data)
               this.fileIdList.push(res.data.id)
@@ -221,7 +221,7 @@ export default {
             id: null
           }
           console.log(fileUpload)
-          axios.post(this.baseURL + '/upload', fileUpload).then(
+          axios.post(this.baseURL + '/file/upload', fileUpload).then(
             (res) => {
               this.fileList.push(res.data)
               this.fileIdList.push(res.data.id)

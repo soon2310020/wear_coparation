@@ -48,7 +48,7 @@ public class Product {
     Category category;
 
     @Transient
-    private List<String> base64File;
+    private List<byte[]> base64File;
 
 
 

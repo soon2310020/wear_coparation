@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/front-end/categories")
@@ -26,8 +27,7 @@ public class CategoryFrontEndController {
 
     @GetMapping("/category")
 
-    public ResponseEntity<Page<Category>> getListCategory(@RequestParam(required = false) String name, Pageable pageable)
-    {
+    public ResponseEntity<Page<Category>> getListCategory(@RequestParam(required = false) String name, Pageable pageable) throws IOException {
         Page<Category> categories = categoryService.getListCategory(name,pageable);
         categoryFileMapping.mappingFileForCategory(categories.getContent());
 
