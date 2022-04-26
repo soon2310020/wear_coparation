@@ -33,6 +33,7 @@
 
           <b-form-group class="col-lg-3 col-md-12">
             <el-input
+            @input="NumberToString1(formSearch.fromPrice,'fromPrice')"
               placeholder="Số tiền từ"
               v-model="formSearch.fromPrice"
             ></el-input>
@@ -40,6 +41,7 @@
 
           <b-form-group class="col-lg-3 col-md-12">
             <el-input
+            @input="NumberToString1(formSearch.toPrice,'toPrice')"
               placeholder="Đến số tiền"
               v-model="formSearch.toPrice"
             ></el-input>
@@ -225,7 +227,7 @@
 
 <script>
 import axios from 'axios'
-import moment from 'moment'
+// import moment from 'moment'
 import { format, fromUnixTime } from 'date-fns'
 import _ from 'lodash'
 export default {
@@ -362,19 +364,20 @@ export default {
 
     search () {
       this.items = []
-      this.formSearch.fromPrice =
+      let query = Object.assign({}, this.formSearch)
+      query.fromPrice =
         this.formSearch.fromPrice == null
           ? null
-          : parseInt(this.formSearch.fromPrice)
-      this.formSearch.toPrice =
+          : this.stringToNumber(this.formSearch.fromPrice)
+      query.toPrice =
         this.formSearch.toPrice == null
           ? null
-          : parseInt(this.formSearch.toPrice)
+          : this.stringToNumber(this.formSearch.toPrice)
       axios
         .post(
           this.baseURL +
             `/product/search-product?page=${this.page}&size=${this.size}`,
-          this.formSearch
+          query
         )
         .then((response) => {
           const awaitFun = (content) => {
@@ -396,7 +399,7 @@ export default {
             return Promise.all(promises)
           }
           // this.items = ;
-          let newObj = _.cloneDeep(response.data.content)
+          // let newObj = _.cloneDeep(response.data.content)
           awaitFun(newObj).then(() => {
             this.items = newObj
           })
@@ -459,6 +462,22 @@ export default {
         return true
       }
     },
+
+    NumberToString1 (value, key) {
+      if (value == null || value === '') {
+
+      } else {
+        value = this.stringToNumber(value)
+        if (!isNaN(value)) {
+          let val = (value / 1).toFixed().replace('.', ',')
+          let string = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+          this.formSearch[key] = string
+          return string
+        } else {
+        }
+      }
+    },
+
     NumberToString (value, k) {
       if (value == null || value === '') {
 

@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category,Long> {
-    @Query("select distinct c from Category c where :name = '' or c.name in :name")
+    @Query("select distinct c from Category c where :name = '' or c.name like %:name%")
     Page<Category> getCategoryByName(@Param("name") String name, Pageable pageable);
 }

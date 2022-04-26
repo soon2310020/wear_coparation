@@ -11,4 +11,8 @@ export default {
 </script>
 
 <style>
+.v-toast
+{
+  z-index: 400000000;
+}
 </style>

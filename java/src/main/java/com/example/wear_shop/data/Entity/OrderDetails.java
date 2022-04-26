@@ -1,5 +1,6 @@
 package com.example.wear_shop.data.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,9 +11,18 @@ import javax.persistence.*;
 public class OrderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "product_id",referencedColumnName = "id")
-    Product product;
+    private Product product;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "order_id",referencedColumnName ="id" )
+    private Order order;
+
+    @Column(name = "quatity")
+    Long quatity;
+
 }

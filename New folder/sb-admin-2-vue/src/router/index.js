@@ -76,5 +76,5 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-// router.replace({ path: '/dashborad', redirect: '/dashborad' })
+router.replace({ path: '/product', redirect: '/product' })
 export default router

@@ -13,27 +13,30 @@ import java.util.List;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "name")
-    String name;
+    private String name;
 
     @Column(name = "status")
-    String status;
+    private String status;
 
-    String description;
+    private String description;
 
     @Column(name = "created_at")
-    Instant createAt;
+    private Instant createAt;
 
     @Column(name = "updated_at")
-    Instant updateAt;
+    private Instant updateAt;
     @JsonIgnore
     @OneToMany(mappedBy = "category")
-    List<Product> products;
+    private List<Product> products;
 
     @Column(name = "file_id")
-    String file;
+    private String file;
+
+    @Transient
+    private List<String> base64File;
 
 
 }

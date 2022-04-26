@@ -108,7 +108,6 @@ export default {
   name: 'DashBoard',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
     }
   }
 }

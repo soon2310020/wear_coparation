@@ -4,6 +4,8 @@ import com.example.wear_shop.data.Entity.User;
 import com.example.wear_shop.repo.UserRepository;
 import com.example.wear_shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +18,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public List<User> searchUser(String username) {
-        return null;
+    public Page<User> searchUser(String username, Pageable pageable) {
+        Page<User> users = userRepository.searchUser(username,pageable);
+        return users;
     }
 }

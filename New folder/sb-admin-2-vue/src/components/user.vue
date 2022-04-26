@@ -75,107 +75,43 @@
       :title="active == 'create' ? 'Thêm mới tài khoản' : 'Chi tiết tài khoản'"
       :visible.sync="dialogFormVisible"
     >
-      <el-form :model="productCreate">
-        <el-form-item label="Tên sản phẩm:" :label-width="formLabelWidth">
-          <el-input v-model="productCreate.title" autocomplete="off"></el-input>
+      <el-form :model="userCreate">
+        <el-form-item label="username:" :label-width="formLabelWidth">
+          <el-input v-model="userCreate.username" autocomplete="off"></el-input>
         </el-form-item>
-
-        <el-form-item label="Kích cỡ:" :label-width="formLabelWidth">
-          <el-select
-            v-model="productCreate.size"
-            multiple
-            filterable
-            allow-create
-            default-first-option
-            placeholder="Chọn hoặc nhập size"
-          >
-            <el-option
-              v-for="(item, index) in optionsSize"
-              :key="index"
-              :label="item"
-              :value="item"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item label="Tên :" :label-width="formLabelWidth">
+          <el-input v-model="userCreate.firstName" autocomplete="off"></el-input>
         </el-form-item>
-
-        <el-form-item label="Giá:" :label-width="formLabelWidth">
-          <el-input
-            @keypress.native="formatInput($event)"
-            @input="NumberToString(productCreate.price)"
-            v-model="productCreate.price"
-            autocomplete="off"
-          ></el-input>
+        <el-form-item label="Họ :" :label-width="formLabelWidth">
+          <el-input v-model="userCreate.lastName" autocomplete="off"></el-input>
         </el-form-item>
-
-        <el-form-item label="Mô tả:" :label-width="formLabelWidth">
-          <ckeditor
-            v-model="productCreate.content"
-            :config="editorConfig"
-          ></ckeditor>
+        <el-form-item label="Vai trò :" :label-width="formLabelWidth">
+        <el-select v-model="userCreate.role" placeholder="Select">
+        <el-option
+         v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+         </el-option>
+         </el-select>
         </el-form-item>
-
-        <el-form-item label="File :" :label-width="formLabelWidth">
-          <el-upload
-            class="upload-demo"
-            action="#"
-            list-type="picture-card"
-            :auto-upload="false"
-            :on-change="handleAddFile"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-          >
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{ file }">
-              <!-- {{file}} -->
-
-              <img
-                class="el-upload-list__item-thumbnail"
-                :src="'data:' + file.contentType + ';base64,' + file.content"
-                alt=""
-              />
-              <span class="el-upload-list__item-actions">
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleRemove(file)"
-                >
-                  <i class="el-icon-delete"></i>
-                </span>
-              </span>
-            </div>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="" />
-          </el-dialog>
+          <el-form-item label="Password :" prop="pass" :label-width="formLabelWidth">
+          <el-input type="password" v-model="userCreate.password" autocomplete="off" ></el-input>
         </el-form-item>
-
-        <el-form-item label="Loại sản phẩm:" :label-width="formLabelWidth">
-          <el-select
-            v-model="productCreate.categoryId"
-            placeholder="Nhập loại sản phẩm"
-          >
-            <el-option
-              v-for="item in listCategory"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
+          <el-form-item label="Nhập lại Password :" prop="pass" :label-width="formLabelWidth">
+          <el-input type="password" v-model="userCreate.repassword" autocomplete="off"></el-input>
         </el-form-item>
-
-        <el-form-item label="Giảm giá:" :label-width="formLabelWidth">
-          <el-input
-            v-model="productCreate.discount"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
+        <el-form-item
+            prop="email"
+            label="Email" :label-width="formLabelWidth"
+             :rules="[
+      { type: 'email', message: 'Hãy nhập email của bạn', trigger: ['blur', 'change'] }]">
+    <el-input v-model="userCreate.email"></el-input>
+  </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancel">Hủy</el-button>
-        <el-button type="primary" @click="createProduct">Lưu</el-button>
+        <el-button type="primary" @click="createUser">Lưu</el-button>
       </span>
     </el-dialog>
   </div>
@@ -183,12 +119,11 @@
 
 <script>
 import axios from 'axios'
-import moment from 'moment'
+// import moment from 'moment'
 import { format, fromUnixTime } from 'date-fns'
-import _ from 'lodash'
+import { ro } from 'date-fns/locale'
 export default {
   created () {
-    this.getInitForm()
     console.log('a')
     this.search()
   },
@@ -204,93 +139,31 @@ export default {
       this.fileIdList = []
       this.dialogFormVisible = true
       // this.productCreate = Object.assign({}, row);
-      this.productCreate.id = row.id
-      this.productCreate.title = row.title
-      this.productCreate.price = this.NumberToString(row.price)
-      this.productCreate.content = row.content
-      this.productCreate.discount = row.discount
-      this.productCreate.size = row.size.trim().split(' ')
-      this.productCreate.categoryId = row.category.id
-      if (row.file != null) {
-        let array = row.file.trim().split(' ')
-        console.log(array)
-        array.forEach((element) => {
-          axios.get(this.baseURL + `/${element}`).then(
-            (res) => {
-              this.fileList.push(res.data)
-              this.fileIdList.push(res.data.id)
-            },
-            (error) => {
-              console.log(error)
-            }
-          )
-        })
-      }
+      this.userCreate.id = row.id
+      this.userCreate.username = row.username
+      this.userCreate.password = ''
+      this.userCreate.repassword = ''
+      this.userCreate.firstName = row.firstName
+      this.userCreate.lastName = row.lastName
+      this.userCreate.role = row.role
+      this.userCreate.email = row.email
+      console.log(this.userCreate)
     },
     handleDelete (id) {
-      axios.delete(this.baseURL + '/product/' + id).then(
+      axios.delete(this.baseURL + '/user/' + id).then(
         (res) => {
-          this.$toast.open('Xóa sản phẩm ' + id + ' thành công !')
+          this.$toast.open('Xóa tài khoản ' + id + ' thành công !')
           this.search()
         },
         (error) => {
           console.log(error)
           this.$toast.error(
-            'Tồn tại sản phẩm có loại sản phẩm trên không thể xóa !'
+            'Tồn tại đơn đặt hàng của tài khoản trên không thể xóa !'
           )
         }
       )
     },
-    handleAddFile (file, fileList) {
-      if (
-        file.name.includes('jpg') ||
-        file.name.includes('jpeg') ||
-        file.name.includes('png')
-      ) {
-        // this.fileList = []
-        const fileReader = new FileReader()
-        fileReader.readAsDataURL(file.raw)
-        fileReader.onload = (e) => {
-          const dataRaw = e.target.result
-          const base64Data = dataRaw.substr(
-            dataRaw.indexOf('base64,') + 'base64,'.length
-          )
-          const fileUpload = {
-            content: base64Data,
-            contentType: file.raw.type,
-            name: file.name,
-            url: '',
-            extendsion: 'Create',
-            id: null
-          }
-          console.log(fileUpload)
-          axios.post(this.baseURL + '/upload', fileUpload).then(
-            (res) => {
-              this.fileList.push(res.data)
-              this.fileIdList.push(res.data.id)
-            },
-            (error) => {
-              console.log(error)
-              this.$toast.error('File quá nặng vui lòng chọn dưới 5 MB !')
-              fileList.splice(fileList.length - 1, 1)
-            }
-          )
-        }
-      } else {
-        this.$toast.error('Vui lòng chọn định dạng ảnh!')
-        fileList.splice(fileList.length - 1, 1)
-      }
-    },
-    handleRemove (file) {
-      let index = this.fileList.findIndex((x) => x.id === file.id)
-      console.log(index)
-      this.fileList.splice(index, 1)
-      this.fileIdList.splice(index, 1)
-      // console.log(file, fileList);
-    },
-    handlePreview (file, fileList) {
-      console.log(file, fileList)
-    },
+
     handleSizeChange (val) {
       this.size = val
       this.search()
@@ -304,73 +177,21 @@ export default {
     },
     cancel () {
       this.dialogFormVisible = !this.dialogFormVisible
-      this.productCreate = {}
+      this.userCreate = {}
       this.fileList = []
-    },
-    getInitForm () {
-      axios
-        .get(this.baseURL + `/categories/category?name=&page=0&size=1000`)
-        .then((response) => {
-          this.listCategory = response.data.content
-        })
-        .catch((e) => {
-          // this.errors.push(e);
-        })
     },
 
     search () {
       this.items = []
-      this.formSearch.fromPrice =
-        this.formSearch.fromPrice == null
-          ? null
-          : parseInt(this.formSearch.fromPrice)
-      this.formSearch.toPrice =
-        this.formSearch.toPrice == null
-          ? null
-          : parseInt(this.formSearch.toPrice)
+
+      this.fileList = []
       axios
-        .post(
+        .get(
           this.baseURL +
-            `/product/search-product?page=${this.page}&size=${this.size}`,
-          this.formSearch
+            `/user/search?page=${this.page}&size=${this.size}&name=${this.formSearch.name}`
         )
         .then((response) => {
-          const awaitFun = (content) => {
-            const promises = content.map(async (e, index) => {
-              if (e.file != null) {
-                let array = e.file.trim().split(' ')
-                console.log(array)
-                await axios.get(this.baseURL + `/${array[0]}`).then(
-                  (res) => {
-                    e.fileBase64 = res.data.content
-                    e.contentType = res.data.contentType
-                  },
-                  (error) => {
-                    console.log(error)
-                  }
-                )
-              }
-            })
-            return Promise.all(promises)
-          }
-          // this.items = ;
-          let newObj = _.cloneDeep(response.data.content)
-          awaitFun(newObj).then(() => {
-            this.items = newObj
-          })
-
-          // response.data.content.forEach((e, index) => {
-          //   let array = e.file.trim().split(" ");
-          //   axios.get(this.baseURL + `/${array[0]}`).then(
-          //     (res) => {
-          //       this.items[index].fileBase64 = res.data.content;
-          //       this.items[index].contentType = res.data.contentType;
-          //     },
-          //     (error) => {
-          //       console.log(error);
-          //     }
-          //   );
-          // });
+          this.items = response.data.content
           this.totalElements = response.data.totalElements
         })
         .catch((e) => {
@@ -378,29 +199,46 @@ export default {
         })
     },
 
-    createProduct () {
-      if (this.productCreate.title === '' || this.productCreate.title == null) {
-        this.$toast.error('Không được để trống tên sản phẩm !')
+    createUser () {
+      const usernameRegex = new RegExp('^[a-z0-9A-Z]{1,}$')
+      if (this.userCreate.username === '' || this.userCreate.username == null) {
+        this.$toast.error('username không được để trống!')
         return
       }
-      this.productCreate.price = this.stringToNumber(this.productCreate.price)
-      this.productCreate.file = this.fileIdList
+      if (!usernameRegex.test(this.userCreate.username)) {
+        this.$toast.error('username Không được chứa ký tự đặc biệt!')
+        return
+      }
+      if (this.userCreate.role === '' || this.userCreate.role == null) {
+        this.$toast.error('Vai trò không được để trống!')
+        return
+      }
+
+      if (this.userCreate.password === '' || this.userCreate.password == null) {
+        this.$toast.error('password không được để trống!')
+        return
+      }
+      if (this.userCreate.password !== this.userCreate.repassword) {
+        this.$toast.error('password nhập lại không giống password!')
+        return
+      }
+
       axios
-        .post(this.baseURL + `/product/product`, this.productCreate)
+        .post(this.baseURL + `/user/register`, this.userCreate)
         .then((response) => {
           if (this.active === 'create') {
-            this.$toast.open('Thêm mới thành công !')
+            this.$toast.open('Thêm mới tài khoản thành công !')
           } else {
             this.$toast.open('Sửa thành công !')
           }
-          // this.$toastr.zs('SUCCESS MESSAGE', 'Thêm mới thành công !')
           this.dialogFormVisible = false
-          this.productCreate = {}
+          this.userCreate = {}
           this.active = 'create'
           this.search()
           // this.dialogFormVisible = !this.dialogFormVisibles
         })
         .catch((e) => {
+          this.$toast.error('username đã tồn tại vui lòng chọn username khác!')
           // this.errors.push(e);
         })
     },
@@ -445,6 +283,13 @@ export default {
   name: 'Forms',
   data () {
     return {
+      options: [{
+        value: 'ROLE_ADMIN',
+        label: 'Admin'
+      }, {
+        value: 'ROLE_USER',
+        label: 'User'
+      }],
       fileList: [],
       active: 'create',
       dialogImageUrl: '',
@@ -454,25 +299,20 @@ export default {
       baseURL: 'http://localhost:9999/wear_shop/api',
       dialogFormVisible: false,
       items: [],
-      optionsSize: ['M', 'L', 'XL'],
-      fileIdList: [],
-      listCategory: [],
       formSearch: {
-        name: null,
-        categoryIds: [],
-        fromPrice: null,
-        toPrice: null
+        name: ''
+
       },
-      productCreate: {
-        id: null,
-        title: null,
-        price: null,
-        content: null,
-        discount: null,
-        size: null,
-        categoryId: null
+      userCreate: {
+        username: null,
+        password: null,
+        repassword: null,
+        firstName: null,
+        lastName: null,
+        email: null,
+        role: null
       },
-      formLabelWidth: '120px',
+      formLabelWidth: '150px',
       editorConfig: {
         // The configuration of the editor.
       },

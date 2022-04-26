@@ -2,7 +2,10 @@ package com.example.wear_shop.controller;
 
 import com.example.wear_shop.data.Entity.User;
 import com.example.wear_shop.repo.UserRepository;
+import com.example.wear_shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +27,9 @@ public class UserController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/register")
     public void Create(@RequestBody User user)
     {
@@ -43,5 +49,17 @@ public class UserController {
         maps.put("email",userDetail.getEmail());
         maps.put("id",userDetail.getId().toString());
         return ResponseEntity.ok(maps);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUser(@RequestParam(name = "name",required = false) String username, Pageable  pageable)
+    {
+        Page<User> userPage = userService.searchUser(username,pageable);
+        return ResponseEntity.ok(userPage);
+    }
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable(name = "id",required = true) Long id)
+    {
+        User user = userRepository.getById(id);
+        userRepository.delete(user);
     }
 }
