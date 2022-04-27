@@ -1,5 +1,7 @@
 package com.example.wear_shop.data.Entity;
 
+import com.example.wear_shop.data.DTO.fileDTO.FileDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,6 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "products")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +51,7 @@ public class Product {
     Category category;
 
     @Transient
-    private List<byte[]> base64File;
+    private List<FileDto> base64File;
 
 
 

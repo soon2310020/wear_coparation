@@ -47,7 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/wear_shop/api/authenticate").permitAll()
-                .antMatchers("/wear_shop/api/user/register").permitAll()
+                .antMatchers("/wear_shop/api/register").permitAll()
                 .antMatchers("/wear_shop/api/front-end/**").permitAll()
                 .antMatchers("/wear_shop/api/file/**").permitAll()
                 .antMatchers("/wear_shop/api/**").authenticated().and().httpBasic();

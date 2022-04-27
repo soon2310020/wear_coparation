@@ -1,5 +1,6 @@
 package com.example.wear_shop.data.Entity;
 
+import com.example.wear_shop.data.DTO.fileDTO.FileDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -36,7 +37,7 @@ public class Category {
     private String file;
 
     @Transient
-    private List<byte[]> base64File;
+    private List<FileDto> base64File;
 
 
 }

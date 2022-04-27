@@ -1,5 +1,7 @@
 package com.example.wear_shop.frontEndController;
 
+import com.example.wear_shop.data.DTO.OrderDTO;
+import com.example.wear_shop.data.DTO.ProductOrderReq;
 import com.example.wear_shop.data.DTO.productDTO.ProductCreateReqDTO;
 import com.example.wear_shop.data.DTO.productDTO.ProductReqDTO;
 import com.example.wear_shop.data.Entity.Product;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -51,6 +54,18 @@ public class ProductFrontEndController {
             product.setSize(size);
         }
         return ResponseEntity.ok(product);
+    }
+    @GetMapping("/product")
+    public ResponseEntity<Product> getProduct(@RequestParam("id") Long id) throws IOException {
+        Product product = productRepository.getById(id);
+        categoryFileMapping.mappingFileForProduct(product);
+
+        return ResponseEntity.ok(product);
+    }
+    @PostMapping("/order")
+    public ResponseEntity<OrderDTO> getOrderInfor(@RequestBody(required = false) List<ProductOrderReq> req) throws IOException {
+        OrderDTO orderDTO=productService.getOrderInfor(req);
+        return ResponseEntity.ok(orderDTO);
     }
 
 

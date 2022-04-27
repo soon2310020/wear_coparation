@@ -4,7 +4,7 @@
       <v-carousel-item :src="require('../assets/img/home/slider4.jpg')">
         <v-row class="fill-height" align="center" justify="center">
           <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>Upto 60% + Extra 10%</strong>
+            <strong>Miễn phí ship cho đơn hàng trên 1.000.000 VND</strong>
           </div>
           <br />
         </v-row>
@@ -12,7 +12,7 @@
       <v-carousel-item :src="require('../assets/img/home/slider2.jpg')">
         <v-row class="fill-height" align="center" justify="center">
           <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>Upto 60% + Extra 10%</strong>
+            <strong>Miễn phí ship cho đơn hàng trên 1.000.000 VND</strong>
           </div>
           <br />
         </v-row>
@@ -20,7 +20,7 @@
       <v-carousel-item :src="require('../assets/img/home/slider3.jpg')">
         <v-row class="fill-height" align="center" justify="center">
           <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>Upto 60% + Extra 10%</strong>
+            <strong>Miễn phí ship cho đơn hàng trên 1.000.000 VND</strong>
           </div>
           <br />
         </v-row>
@@ -28,7 +28,7 @@
       <v-carousel-item :src="require('../assets/img/home/slider1.jpg')">
         <v-row class="fill-height" align="center" justify="center">
           <div class="display-2 white--text pl-5 pr-5 hidden-sm-only">
-            <strong>Upto 60% + Extra 10%</strong>
+            <strong>Miễn phí ship cho đơn hàng trên 1.000.000 VND</strong>
           </div>
           <br />
         </v-row>
@@ -45,7 +45,7 @@
           >
             <h1 class="text-center font-size">Top Picks</h1>
             <div class="text-center">
-              <v-btn href="/shop" class="white--text" outlined>SHOP NOW</v-btn>
+              <v-btn href="/shop" class="white--text" outlined>Mua ngay</v-btn>
             </div>
 
             <!--            <v-expand-transition>-->
@@ -73,7 +73,7 @@
           >
             <h1 class="text-center font-size">New Arrivals</h1>
             <div class="text-center">
-              <v-btn href="/shop" class="white--text" outlined>SHOP NOW</v-btn>
+              <v-btn href="/shop" class="white--text" outlined>Mua ngay</v-btn>
             </div>
           </v-img>
         </v-card>
@@ -88,10 +88,10 @@
             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
             height="300px"
           >
-            <h1 class="text-center font-size">Lorem & Ipsum</h1>
+            <h1 class="text-center font-size"></h1>
             <div class="text-center mt-2">
               <v-btn class="white--text caption" href="/shop" text
-                >SHOP NOW
+                >Mua ngay
                 <v-icon class="white--text caption"
                   >mdi-arrow-right</v-icon
                 ></v-btn
@@ -108,10 +108,10 @@
             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
             height="300px"
           >
-            <h1 class="text-center font-size">Lorem & Ipsum</h1>
+            <h1 class="text-center font-size"></h1>
             <div class="text-center mt-2">
               <v-btn class="white--text caption" href="/shop" text
-                >SHOP NOW
+                >Mua ngay
                 <v-icon class="white--text caption"
                   >mdi-arrow-right</v-icon
                 ></v-btn
@@ -128,10 +128,10 @@
             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
             height="300px"
           >
-            <h1 class="text-center font-size">Lorem & Ipsum</h1>
+            <h1 class="text-center font-size"></h1>
             <div class="text-center mt-2">
               <v-btn class="white--text caption" href="/shop" text
-                >SHOP NOW
+                >Mua ngay
                 <v-icon class="white--text caption"
                   >mdi-arrow-right</v-icon
                 ></v-btn
@@ -159,19 +159,18 @@
                       class="white--text align-end"
                       height="200px"
                       :src="
-                        'data:' + item.contentType + ';base64,' + item.content
+                        'data:' +item.base64File[0].contentType + ';base64,' +item.base64File[0].content
                       "
                     >
                       <v-card-title>{{ item.name }} </v-card-title>
                     </v-img>
-
                     <v-card-text class="text--primary text-center">
                       <div v-html="item.description"></div>
                     </v-card-text>
 
                     <div class="text-center">
                       <v-btn  @click="getProduct(item.id)"  class="ma-2" outlined color="info">
-                        Explore
+                        Khám phá ngay
                       </v-btn>
                     </div>
                   </v-card>
@@ -263,8 +262,8 @@
                 <v-icon class="display-2">mdi-truck</v-icon>
               </v-col>
               <v-col class="col-12 col-sm-9 pr-4">
-                <h3 class="font-weight-light">FREE SHIPPING & RETURN</h3>
-                <p class="font-weight-thin">Free Shipping over $300</p>
+                <h3 class="font-weight-light">Miễn phí ship</h3>
+                <p class="font-weight-thin">Cho đơn hàng trên 1.000.000 VND</p>
               </v-col>
             </v-row>
           </v-col>
@@ -274,8 +273,8 @@
                 <v-icon class="display-2">mdi-cash-usd</v-icon>
               </v-col>
               <v-col class="col-12 col-sm-9 pr-4">
-                <h3 class="font-weight-light">MONEY BACK GUARANTEE</h3>
-                <p class="font-weight-thin">30 Days Money Back Guarantee</p>
+                <h3 class="font-weight-light">Bảo hành 1 tháng</h3>
+                <p class="font-weight-thin">Trả hàng miễn phí nếu sản phẩm lỗi</p>
               </v-col>
             </v-row>
           </v-col>
@@ -285,8 +284,8 @@
                 <v-icon class="display-2">mdi-headset</v-icon>
               </v-col>
               <v-col class="col-12 col-sm-9 pr-4">
-                <h3 class="font-weight-light">020-800-456-747</h3>
-                <p class="font-weight-thin">24/7 Available Support</p>
+                <h3 class="font-weight-light">0865279193</h3>
+                <p class="font-weight-thin">Gọi hotline để được hỗ trợ</p>
               </v-col>
             </v-row>
           </v-col>
@@ -419,6 +418,10 @@ export default {
   opacity: 0.5;
   position: absolute;
   width: 100%;
+}
+.v-application .accent {
+    background-color: #c7c7c7 !important;
+    border-color: #eff3f2 !important;
 }
 </style>
 

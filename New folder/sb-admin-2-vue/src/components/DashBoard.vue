@@ -108,6 +108,7 @@ export default {
   name: 'DashBoard',
   data () {
     return {
+      baseURL: 'http://localhost:9999/wear_shop/api'
     }
   }
 }

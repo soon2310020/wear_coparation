@@ -45,6 +45,7 @@ public class UserController {
         Map<String,String> maps= new HashMap<String,String>();
         User userDetail = user.get(0);
         maps.put("username",userDetail.getUsername());
+        maps.put("firstName",userDetail.getFirstName());
         maps.put("role",userDetail.getRole());
         maps.put("email",userDetail.getEmail());
         maps.put("id",userDetail.getId().toString());

@@ -11,9 +11,14 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "element-ui": "^2.15.8",
+    "jwt-decode": "^3.1.2",
     "material-design-icons-iconfont": "^5.0.1",
     "vue": "^2.5.2",
+    "vue-fb-customer-chat": "^0.2.1",
     "vue-router": "^3.0.1",
+    "vue-toast-notification": "^0.6.2",
+    "vue-toastr": "^2.1.2",
     "vuetify": "^2.2.14",
     "vuex": "^3.6.2"
   },

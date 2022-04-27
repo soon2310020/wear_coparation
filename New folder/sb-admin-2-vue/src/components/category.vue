@@ -166,12 +166,14 @@ export default {
     },
     handleDetail (row) {
       this.active = 'edit'
+      this.dialogFormVisible = true
       this.fileList = []
       this.fileIdList = []
-      this.dialogFormVisible = true
-      this.categoryCreate = Object.assign({}, row)
-      if (this.categoryCreate.file != null) {
-        let array = this.categoryCreate.file.trim().split(' ')
+      setTimeout(() => {
+        this.categoryCreate = Object.assign({}, row)
+      }, '100')
+      if (row.file != null) {
+        let array = row.file.trim().split(' ')
         console.log(array)
         array.forEach((element) => {
           axios.get(this.baseURL + `/file/${element}`).then(

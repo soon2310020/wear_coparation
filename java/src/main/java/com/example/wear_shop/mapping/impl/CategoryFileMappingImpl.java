@@ -1,5 +1,6 @@
 package com.example.wear_shop.mapping.impl;
 
+import com.example.wear_shop.data.DTO.fileDTO.FileDto;
 import com.example.wear_shop.data.Entity.Category;
 import com.example.wear_shop.data.Entity.Product;
 import com.example.wear_shop.mapping.CategoryFileMapping;
@@ -24,12 +25,12 @@ public class CategoryFileMappingImpl implements CategoryFileMapping {
         for (Product p: products) {
             if (p.getFile()!=null&&!p.getFile().isEmpty())
             {
-                List<byte[]> base64s = new ArrayList<byte[]>();
+                List<FileDto> base64s = new ArrayList<FileDto>();
                 String fileString =p.getFile();
                 String [] files = fileString.trim().split(" ");
                 for (String fileId: files) {
                     Long id = Long.parseLong(fileId);
-                    byte[] base64 = fileService.getFileById(id).getContent();
+                    FileDto base64 = fileService.getFileById(id);
                     base64s.add(base64);
                 }
                 p.setBase64File(base64s);
@@ -43,11 +44,11 @@ public class CategoryFileMappingImpl implements CategoryFileMapping {
         for (Category c: categories) {
             if (c.getFile()!=null&&!c.getFile().isEmpty())
             {
-                List<byte[]> base64s = new ArrayList<byte[]>();
+                List<FileDto> base64s = new ArrayList<FileDto>();
                 String fileString =c.getFile();
                 String [] files = fileString.trim().split(" ");
                     Long id = Long.parseLong(files[0]);
-                    byte[] base64 = fileService.getFileById(id).getContent();
+                    FileDto base64 = fileService.getFileById(id);
                     base64s.add(base64);
 
                 c.setBase64File(base64s);
@@ -55,5 +56,22 @@ public class CategoryFileMappingImpl implements CategoryFileMapping {
 
         }
         return categories;
+    }
+
+    @Override
+    public void mappingFileForProduct(Product product) throws IOException {
+        if (product.getFile()!=null&&!product.getFile().isEmpty())
+        {
+            List<FileDto> base64s = new ArrayList<FileDto>();
+            String fileString =product.getFile();
+            String [] files = fileString.trim().split(" ");
+            for (String fileId: files) {
+                Long id = Long.parseLong(fileId);
+                FileDto base64 = fileService.getFileById(id);
+                base64s.add(base64);
+            }
+            product.setBase64File(base64s);
+        }
+
     }
 }

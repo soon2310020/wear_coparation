@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface CategoryFileMapping {
     void mappingFileForProduct(List<Product> products) throws IOException;
+    void mappingFileForProduct(Product products) throws IOException;
     List<Category> mappingFileForCategory(List<Category> categories) throws IOException;
 
 

@@ -245,16 +245,28 @@ export default {
     handleDetail (row) {
       this.active = 'edit'
       this.fileList = []
-      this.fileIdList = []
       this.dialogFormVisible = true
+      this.productCreate = {
+        id: null,
+        title: null,
+        price: null,
+        content: null,
+        discount: null,
+        size: null,
+        categoryId: null
+      }
+      this.fileIdList = []
       // this.productCreate = Object.assign({}, row);
-      this.productCreate.id = row.id
-      this.productCreate.title = row.title
-      this.productCreate.price = this.NumberToString(row.price)
-      this.productCreate.content = row.content
-      this.productCreate.discount = row.discount
-      this.productCreate.size = row.size.trim().split(' ')
-      this.productCreate.categoryId = row.category.id
+      setTimeout(() => {
+        this.productCreate.id = row.id
+        this.productCreate.title = row.title
+        this.productCreate.price = this.NumberToString(row.price)
+        this.productCreate.content = row.content
+        this.productCreate.discount = row.discount
+        this.productCreate.size = row.size.trim().split(' ')
+        this.productCreate.categoryId = row.category.id
+      }, '100')
+
       if (row.file != null) {
         let array = row.file.trim().split(' ')
         console.log(array)
