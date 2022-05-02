@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.wear_shop.util.JwtTokenUtil;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"jwt token is invalid or incorrect");
                 System.out.println("JWT Token has expired");
+            }
+            catch (MalformedJwtException ex)
+            {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"jwt token is invalid or incorrect");
+                System.out.println("JWT cannot read");
             }
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"jwt token is invalid or incorrect");

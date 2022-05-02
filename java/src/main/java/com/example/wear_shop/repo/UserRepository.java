@@ -17,5 +17,8 @@ public interface UserRepository  extends JpaRepository<User,Long> {
     @Query("select distinct u from User u where (:username = '' or u.username like %:username% )")
     Page<User> searchUser(@Param("username") String username, Pageable pageable);
 
+    @Query("select count(distinct u) from User u where u.role <> 'ROLE_ADMIN' ")
+    Long countAllByRole();
+
 
 }

@@ -22,4 +22,6 @@ public interface ProductRepository  extends JpaRepository<Product,Long> {
                                   @Param("toPrice") Long toPrice,
                                   @Param("cId") List<Long> category,
                                   Pageable pageable);
+    @Query("select count( distinct p) from Product p where p.status <> 0")
+    Long countAllByStatus();
 }

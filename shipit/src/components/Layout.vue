@@ -142,7 +142,6 @@ export default {
       if(localStorage.getItem("user")==null)
       return
       let arr = []
-      debugger
       arr = localStorage.getItem("user").trim().split(" ")
 
       let jwt = arr[1]
@@ -155,11 +154,23 @@ export default {
        axios
         .get(this.baseURL + `/user/${decoded.sub}`)
         .then((response) => {
-          localStorage.setItem("user_infor",response.data.toString())
+          localStorage.setItem("user_id",response.data.id)
+          console.log(response)
           this.username = response.data.username
 
 
-        })
+        }).catch ((error) =>
+          {
+
+ debugger
+            console.log(error)
+
+          if(error.response.status == 401||)
+          {
+            localStorage.clear()
+          }
+        } )
+
     }
   },
   data() {

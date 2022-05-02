@@ -204,6 +204,7 @@ export default {
       // })
       // this.cardIndex=index;
     },
+    
   },
 };
 </script>

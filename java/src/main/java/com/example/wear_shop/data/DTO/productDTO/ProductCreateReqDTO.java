@@ -16,7 +16,7 @@ public class ProductCreateReqDTO {
     String color;
     Long price;
     String content;
-    int status;
+    Long status;
     Long avatar;
     List<Long> file;
     Long categoryId;

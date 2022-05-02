@@ -21,6 +21,8 @@ import Typography from '@/components/ui-elements/Typography'
 
 import Blank from '@/components/pages/Blank'
 import Login from '@/components/pages/Login'
+import Order from '@/components/order'
+import Blog from '@/components/blog' 
 
 Vue.use(Router)
 
@@ -47,8 +49,9 @@ const router = new Router({
       { path: '/notifications', name: 'Notifications', component: Notifications },
       { path: '/panels', name: 'Panels', component: Panels },
       { path: '/typography', name: 'Typography', component: Typography },
-
-      { path: '/blank', name: 'Blank', component: Blank }
+      { path: '/blank', name: 'Blank', component: Blank },
+      {path: '/order', name: 'Order', component: Order},
+      {path: '/blog', name: 'blog', component: Blog}
     ]
   },
   { path: '/login', name: 'Login', component: Login }
@@ -57,7 +60,7 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
   console.log(to)
-  const publicPages = ['/login', '/register', '/home']
+  const publicPages = ['/login', '/register']
   const authRequired = !publicPages.includes(to.path)
   const loggedIn = window.sessionStorage.getItem('user')
   if (loggedIn) {
@@ -76,5 +79,5 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-router.replace({ path: '/product', redirect: '/product' })
+// router.replace({ path: '/product', redirect: '/product' })
 export default router

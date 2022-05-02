@@ -10,6 +10,7 @@ import Cart from '@/components/Cart'
 import Layout from '@/components/Layout'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
+import Order from '@/components/Order'
 Vue.use(Router)
 
 const router = new Router({
@@ -47,6 +48,13 @@ const router = new Router({
           path: '/cart',
           component: Cart,
           name: 'Cart'
+        },
+        ,
+        {
+          path: '/order',
+          component: Order,
+          name:'Order'
+
         }
       ]
 
@@ -67,7 +75,7 @@ const router = new Router({
 )
 router.beforeEach((to, from, next) => {
   console.log(to)
-  const publicPages = ['/login','/Home','/shop','/product','/cart','/blog','/register','/']
+  const publicPages = ['/login', '/Home', '/shop', '/product', '/cart', '/blog', '/register', '/',"/order"]
   const authRequired = !publicPages.includes(to.path)
   const loggedIn = localStorage.getItem('user')
   if (loggedIn) {

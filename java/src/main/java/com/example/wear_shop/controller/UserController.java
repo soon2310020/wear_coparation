@@ -63,4 +63,9 @@ public class UserController {
         User user = userRepository.getById(id);
         userRepository.delete(user);
     }
+    @GetMapping("chart_all")
+    public ResponseEntity<Long> countALL()
+    {
+        return ResponseEntity.ok(userRepository.countAllByRole());
+    }
 }

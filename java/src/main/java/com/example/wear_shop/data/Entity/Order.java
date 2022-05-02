@@ -3,6 +3,7 @@ package com.example.wear_shop.data.Entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -23,9 +24,20 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
+    @Column(name = "payment_status")
+    private Long status;
 
-    @OneToMany(mappedBy = "order")
+    @Column(name = "fullname")
+    private String receivedName;
+
+    @OneToMany(mappedBy = "order",cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.DETACH})
     private List<OrderDetails> orderDetails;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
 
 }

@@ -74,6 +74,12 @@
               />
             </template>
           </el-table-column>
+            <el-table-column prop="status" label="Trạng thái" width="150">
+              <template slot-scope="scope">
+              <span>{{ scope.row.status === 1 ? 'Còn hàng' : 'Hết hàng' }}</span
+              >
+            </template>
+          </el-table-column>
           <el-table-column prop="createAt" label="Ngày tạo" width="140">
             <template slot-scope="scope">
               <span>
@@ -216,6 +222,22 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
+         <el-form-item label="Trạng thái:" :label-width="formLabelWidth">
+           <el-switch
+            v-model="productCreate.status"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+          </el-switch>
+           <!-- <el-tooltip :content="'Switch value: ' + value" placement="top">
+  <el-switch
+    v-model="productCreate.status"
+    active-color="#13ce66"
+    inactive-color="#ff4949"
+     active-value="100"
+    inactive-value="0">
+  </el-switch>
+</el-tooltip> -->
+         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancel">Hủy</el-button>
@@ -253,7 +275,8 @@ export default {
         content: null,
         discount: null,
         size: null,
-        categoryId: null
+        categoryId: null,
+        status: null
       }
       this.fileIdList = []
       // this.productCreate = Object.assign({}, row);
@@ -265,6 +288,7 @@ export default {
         this.productCreate.discount = row.discount
         this.productCreate.size = row.size.trim().split(' ')
         this.productCreate.categoryId = row.category.id
+        this.productCreate.status = row.status === 1 ? true : false
       }, '100')
 
       if (row.file != null) {
@@ -292,7 +316,7 @@ export default {
         (error) => {
           console.log(error)
           this.$toast.error(
-            'Tồn tại sản phẩm có loại sản phẩm trên không thể xóa !'
+            'Đã có đơn đặt hàng không thể xóa sản phẩm !'
           )
         }
       )
@@ -436,10 +460,28 @@ export default {
     },
 
     createProduct () {
+      // const discountRegex = new RegExp('^[0-9]{1,2}$')
       if (this.productCreate.title === '' || this.productCreate.title == null) {
         this.$toast.error('Không được để trống tên sản phẩm !')
         return
       }
+      if (this.productCreate.price === '' || this.productCreate.price == null) {
+        this.$toast.error('Khồng được để trống giá !')
+        return
+      }
+      if (this.productCreate.size === '' || this.productCreate.size == null) {
+        this.$toast.error('Khồng được để trống Kích cỡ !')
+        return
+      }
+      if (this.productCreate.size === '' || this.productCreate.size == null) {
+        this.$toast.error('Khồng được để trống Kích cỡ !')
+        return
+      }
+      // if (discountRegex.test(this.productCreate.discount) !== 1) {
+      //   this.$toast.error('Nhập giảm giá dưới 100 !')
+      //   return
+      // }
+      this.productCreate.status = this.productCreate.status === true ? 1 : 0
       this.productCreate.price = this.stringToNumber(this.productCreate.price)
       this.productCreate.file = this.fileIdList
       axios
@@ -519,6 +561,7 @@ export default {
   data () {
     return {
       fileList: [],
+      value: 1,
       active: 'create',
       dialogImageUrl: '',
       dialogVisible: false,
@@ -543,7 +586,8 @@ export default {
         content: null,
         discount: null,
         size: null,
-        categoryId: null
+        categoryId: null,
+        status: null
       },
       formLabelWidth: '120px',
       editorConfig: {

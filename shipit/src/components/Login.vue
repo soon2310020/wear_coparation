@@ -56,7 +56,7 @@
       </el-tooltip>
       <div class="row">
         <div class="col-md-6">
-          <el-button type="info" style="width: 100%; margin-bottom: 30px" href="/register"
+          <el-button type="info" style="width: 100%; margin-bottom: 30px" @click="register()"
             >Đăng ký</el-button
           >
         </div>
@@ -158,7 +158,7 @@ export default {
           // this.$toastr.zs('SUCCESS MESSAGE', 'Thêm mới thành công !')
           let loc = window.location;
           const port = loc.port ? ":" + loc.port : "";
-          loc.href = `//${loc.hostname}${port}/Cart`;
+          loc.href = `//${loc.hostname}${port}`;
           // this.dialogFormVisible = !this.dialogFormVisibles
         })
         .catch((e) => {
@@ -166,6 +166,12 @@ export default {
           // this.errors.push(e);
         });
     },
+    register()
+    {
+        let loc = window.location;
+          const port = loc.port ? ":" + loc.port : "";
+          loc.href = `//${loc.hostname}${port}/register`;
+    }
   },
 };
 </script>

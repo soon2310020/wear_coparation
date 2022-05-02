@@ -18,7 +18,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">Admin site</a>
+        <a class="navbar-brand" href="index.html">Quản lý bán hàng WEAR SHOP</a>
       </div>
       <!-- /.navbar-header -->
 
@@ -47,19 +47,33 @@
           <ul class="nav" id="side-menu">
             <li>
               <router-link to="/dashborad">
-                <i class="fa fa-dashboard fa-fw"></i> Dashboard
+                <i class="fa fa-dashboard fa-fw"></i> Thống kê
               </router-link>
             </li>
             <!-- category link -->
             <li>
-              <router-link to="/category"> Danh mục sản phẩm </router-link>
+              <router-link to="/category"
+                ><i class='fa fa-shopping-bag'></i> Danh mục sản phẩm
+              </router-link>
             </li>
 
             <li>
-              <router-link to="/product"> Danh sách sản phẩm </router-link>
+              <router-link to="/product">
+                <i class="fa fa-book"></i> Danh sách sản phẩm
+              </router-link>
             </li>
-             <li>
-              <router-link to="/user"> Quản lý tài khoản </router-link>
+            <li>
+              <router-link to="/user">
+                <i class="fa fa-user"></i> Quản lý tài khoản
+              </router-link>
+            </li>
+                <li>
+              <router-link to="/blog">
+                <i class="fa fa-hacker-news"></i> Quản lý blog
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/order"><i class="fa fa-archive"></i> Quản lý đơn hàng</router-link>
             </li>
           </ul>
         </div>

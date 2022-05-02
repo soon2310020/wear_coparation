@@ -39,7 +39,6 @@ public class Product {
     @Column(name = "updated_at")
     Instant updateAt;
 
-
     @Column(name ="file_id")
     String file;
 

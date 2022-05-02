@@ -1,4 +1,5 @@
 <template>
+
   <div class="login-container">
     <div class="row">
       <div class="col-md-4"></div>
@@ -8,19 +9,19 @@
         </div>
 
         <el-form :model="userCreate">
-          <el-form-item label="Username:" :label-width="formLabelWidth">
+          <el-form-item label="Username:">
             <el-input
               v-model="userCreate.username"
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="Tên :" :label-width="formLabelWidth">
+          <el-form-item label="Tên :" >
             <el-input
               v-model="userCreate.firstName"
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="Họ :" :label-width="formLabelWidth">
+          <el-form-item label="Họ :" >
             <el-input
               v-model="userCreate.lastName"
               autocomplete="off"
@@ -29,7 +30,6 @@
           <el-form-item
             label="Password :"
             prop="pass"
-            :label-width="formLabelWidth"
           >
             <el-input
               type="password"
@@ -40,7 +40,6 @@
           <el-form-item
             label="Nhập lại Password :"
             prop="pass"
-            :label-width="formLabelWidth"
           >
             <el-input
               type="password"
@@ -51,7 +50,6 @@
           <el-form-item
             prop="email"
             label="Email"
-            :label-width="formLabelWidth"
             :rules="[
               {
                 type: 'email',
@@ -65,7 +63,7 @@
 
           <div class="row">
             <div class="col-md-6">
-              <el-button type="primary" style="width: 100%; margin-bottom: 30px"
+              <el-button type="primary" style="width: 100%; margin-bottom: 30px" @click="login()"
                 >Đăng nhập</el-button
               >
             </div>
@@ -97,7 +95,6 @@
 <script>
 import axios from "axios";
 export default {
-  name: "Login",
   created() {
     this.checkLogined();
   },
@@ -113,6 +110,7 @@ export default {
         email: null,
         role: null,
       },
+
       // baseURL: "http://192.168.1.208:9999/wear_shop/api/",
       baseURL: "http://localhost:9999/wear_shop/api/",
     };
@@ -141,25 +139,34 @@ export default {
       axios
         .post(this.baseURL + `register`, this.userCreate)
         .then((response) => {
+              debugger
           this.$toastr.i("Đăng ký thành công !");
-          window.history.go()
-          // const port = loc.port ? ":" + loc.port : "";
-          // loc.href = `//${loc.hostname}${port}/login`;
+          // window.history.go()
+           let loc = window.location;
+          const port = loc.port ? ":" + loc.port : "";
+          loc.href = `//${loc.hostname}${port}/login`;
           // // this.dialogFormVisible = !this.dialogFormVisibles
-        })
-        .catch((e) => {
+        }),
+        (error) => {
           this.$toastr.e("Username đã tồn tại vui lòng chọn username khác!");
-        });
+        };
     },
-  },
-  checkLogined() {
-    debugger
+      checkLogined(){
+
     if (localStorage.getItem("user")) {
       let loc = window.location;
       const port = loc.port ? ":" + loc.port : "";
       loc.href = `//${loc.hostname}${port}`;
     }
   },
+  login()
+  {
+       let loc = window.location;
+          const port = loc.port ? ":" + loc.port : "";
+          loc.href = `//${loc.hostname}${port}/login`;
+  }
+  },
+
 };
 </script>
 

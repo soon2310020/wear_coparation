@@ -23,35 +23,36 @@ public class CategoriesController {
     private CategoryService categoryService;
     @Autowired
     private CategoryRepository categoryRepository;
+
     @PostMapping("/category")
-    public void createCategory(@RequestBody @Valid CategoryReqDTO req)
-    {
+    public void createCategory(@RequestBody @Valid CategoryReqDTO req) {
         categoryService.create(req);
     }
 
     @GetMapping("/category")
 
-    public ResponseEntity<Page<Category>> getListCategory(@RequestParam(required = false) String name, Pageable pageable)
-    {
-       Page<Category> categories = categoryService.getListCategory(name,pageable);
-       return ResponseEntity.ok(categories);
+    public ResponseEntity<Page<Category>> getListCategory(@RequestParam(required = false) String name, Pageable pageable) {
+        Page<Category> categories = categoryService.getListCategory(name, pageable);
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/category/{id}")
 
-    public ResponseEntity<Category> getCategory(@PathVariable(required = true) Long id)
-    {
-        Category category =categoryRepository.getById(id);
-      return ResponseEntity.ok(category);
+    public ResponseEntity<Category> getCategory(@PathVariable(required = true) Long id) {
+        Category category = categoryRepository.getById(id);
+        return ResponseEntity.ok(category);
     }
 
     @DeleteMapping("/category/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable(required = true) Long id)
-    {
-        Category category =categoryRepository.getById(id);
+    public ResponseEntity<String> deleteCategory(@PathVariable(required = true) Long id) {
+        Category category = categoryRepository.getById(id);
         categoryRepository.delete(category);
         return ResponseEntity.ok("Success");
     }
 
+    @GetMapping("/chart_all")
+    public ResponseEntity<Long> getAll() {
+        return ResponseEntity.ok(categoryRepository.countAll());
+    }
 
 }

@@ -22,7 +22,10 @@ public class OrderDetails {
     @JoinColumn(name = "order_id",referencedColumnName ="id" )
     private Order order;
 
-    @Column(name = "quatity")
-    Long quatity;
+    @Column(name = "quantity")
+    private Long quatity;
+
+    @Column(name = "size")
+    private String size;
 
 }

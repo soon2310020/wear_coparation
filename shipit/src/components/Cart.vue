@@ -94,7 +94,7 @@
               @click="updateStore()"
               >Cập nhật</v-btn
             >
-            <v-btn class="primary white--text mt-5" outlined>Đặt hàng</v-btn>
+            <v-btn class="primary white--text mt-5" outlined @click="addOrder()">Đặt hàng</v-btn>
           </div>
         </v-col>
       </v-row>
@@ -132,7 +132,7 @@
                 <v-icon class="display-2">mdi-headset</v-icon>
               </v-col>
               <v-col class="col-12 col-sm-9 pr-4">
-                <h3 class="font-weight-light">0865279193</h3>
+                <h3 class="font-weight-light">0865.279.193</h3>
                 <p class="font-weight-thin">Gọi hotline để được hỗ trợ</p>
               </v-col>
             </v-row>
@@ -231,10 +231,27 @@ export default {
       // })
       // this.cardIndex=index;
     },
-    changeValue(a)
-    {
-console.log(a)
-    }
+   addOrder()
+   {
+     if(localStorage.getItem("user"))
+     {
+       if(sessionStorage.getItem("card"))
+       {
+          let loc = window.location;
+          const port = loc.port ? ":" + loc.port : "";
+          loc.href = `//${loc.hostname}${port}/order`;
+       }
+       else
+       {
+         this.$toastr.w("Vui lòng thêm vào giỏ hàng sản phẩm!");
+       }
+
+     }
+     else
+     {
+         this.$toastr.w("Vui lòng đăng nhập tài khoản để đặt hàng!");
+     }
+   }
   },
 };
 </script>

@@ -46,6 +46,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         product.setId(createReqDTO.getId());
         product.setUpdateAt(Instant.now());
+        product.setStatus(createReqDTO.getStatus());
+
         product.setContent(createReqDTO.getContent());
         Category category = categoryRepository.getById(createReqDTO.getCategoryId());
         product.setCategory(category);
@@ -105,8 +107,9 @@ public class ProductServiceImpl implements ProductService {
 
         }
         orderDetails.setProduct(productOrderResList);
-        orderDetails.setShipFee(300000L);
-        orderDetails.setTotal(totalPrice);
+        Long feeShip = totalPrice <1000000L? 30000L:0L;
+        orderDetails.setShipFee(feeShip);
+        orderDetails.setTotal(totalPrice+feeShip);
         return orderDetails;
     }
 }

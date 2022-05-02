@@ -12,4 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface CategoryRepository extends JpaRepository<Category,Long> {
     @Query("select distinct c from Category c where :name = '' or c.name like %:name%")
     Page<Category> getCategoryByName(@Param("name") String name, Pageable pageable);
+
+    @Query("select count(distinct c) from Category c ")
+    Long countAll();
 }

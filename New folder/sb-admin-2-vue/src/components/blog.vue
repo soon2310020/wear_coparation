@@ -5,14 +5,14 @@
         <b-form class="row">
           <div class="row">
             <div class="col-lg-12">
-              <h1 class="page-header">Quản lý tài khoản</h1>
+              <h1 class="page-header">Quản lý Blog</h1>
             </div>
             <!-- /.col-lg-12 -->
           </div>
           <b-form-group class="col-lg-6 col-md-12">
             <el-input
-              placeholder="Nhập username."
-              v-model="formSearch.name"
+              placeholder="Nhập tiêu đề blog"
+              v-model="formSearch.title"
             ></el-input>
           </b-form-group>
 
@@ -26,9 +26,9 @@
       </div>
       <div>
         <el-table :data="items" style="width: 100%">
-          <el-table-column prop="id" label="Mã tài khoản" width="150">
+          <el-table-column prop="id" label="Mã tin tức" width="150">
           </el-table-column>
-          <el-table-column prop="username" label="Tên tài khoản" width="150">
+          <el-table-column prop="title" label="tiêu đề" width="150">
           </el-table-column>
           <el-table-column prop="createAt" label="Ngày tạo" width="140">
             <template slot-scope="scope">
@@ -72,46 +72,23 @@
       </div>
     </div>
     <el-dialog
-      :title="active == 'create' ? 'Thêm mới tài khoản' : 'Chi tiết tài khoản'"
+      :title="active == 'create' ? 'Thêm mới tin tức' : 'Chi tiết tin tức'"
       :visible.sync="dialogFormVisible"
     >
-      <el-form :model="userCreate">
-        <el-form-item label="username:" :label-width="formLabelWidth">
-          <el-input v-model="userCreate.username" autocomplete="off"></el-input>
+      <el-form :model="newCreate">
+        <el-form-item label="Tiêu đề :" :label-width="formLabelWidth">
+          <el-input v-model="newCreate.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="Tên :" :label-width="formLabelWidth">
-          <el-input v-model="userCreate.firstName" autocomplete="off"></el-input>
+        <el-form-item label="Nội dung :" :label-width="formLabelWidth">
+          <ckeditor
+            v-model="newCreate.content"
+            :config="editorConfig"
+          ></ckeditor>
         </el-form-item>
-        <el-form-item label="Họ :" :label-width="formLabelWidth">
-          <el-input v-model="userCreate.lastName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="Vai trò :" :label-width="formLabelWidth">
-        <el-select v-model="userCreate.role" placeholder="Select">
-        <el-option
-         v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-         </el-option>
-         </el-select>
-        </el-form-item>
-          <el-form-item label="Password :" prop="pass" :label-width="formLabelWidth">
-          <el-input type="password" v-model="userCreate.password" autocomplete="off" ></el-input>
-        </el-form-item>
-          <el-form-item label="Nhập lại Password :" prop="pass" :label-width="formLabelWidth">
-          <el-input type="password" v-model="userCreate.repassword" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item
-            prop="email"
-            label="Email" :label-width="formLabelWidth"
-             :rules="[
-      { type: 'email', message: 'Hãy nhập email của bạn', trigger: ['blur', 'change'] }]">
-    <el-input v-model="userCreate.email"></el-input>
-  </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancel">Hủy</el-button>
-        <el-button type="primary" @click="createUser">Lưu</el-button>
+        <el-button type="primary" @click="createNew">Lưu</el-button>
       </span>
     </el-dialog>
   </div>
@@ -136,41 +113,34 @@ export default {
     handleDetail (row) {
       this.active = 'edit'
       this.dialogFormVisible = true
-      this.userCreate = {
+      this.newCreate = {
         id: null,
-        username: null,
-        password: null,
-        repassword: null,
-        firstName: null,
-        lastName: null,
-        email: null,
-        role: null
+        content: null,
+        title: null
+
       }
       this.fileList = []
       this.fileIdList = []
       // this.productCreate = Object.assign({}, row);
       setTimeout(() => {
-        this.userCreate.id = row.id
-        this.userCreate.username = row.username
-        this.userCreate.password = ''
-        this.userCreate.repassword = ''
-        this.userCreate.firstName = row.firstName
-        this.userCreate.lastName = row.lastName
-        this.userCreate.role = row.role
-        this.userCreate.email = row.email
+        this.newCreate.id = row.id
+        this.newCreate.title = row.title
+        this.newCreate.content = row.content
       }, '100')
-      console.log(this.userCreate)
+      // console.log(this.userCreate)
     },
     handleDelete (id) {
-      axios.delete(this.baseURL + '/user/' + id).then(
+      debugger
+      console.log(id)
+      axios.delete(this.baseURL + '/new/delete/' + id).then(
         (res) => {
-          this.$toast.open('Xóa tài khoản ' + id + ' thành công !')
+          this.$toast.open('Xóa tin tức ' + id + ' thành công !')
           this.search()
         },
         (error) => {
           console.log(error)
           this.$toast.error(
-            'Tồn tại đơn đặt hàng của tài khoản trên không thể xóa !'
+            'Không xóa được tin tức !'
           )
         }
       )
@@ -200,7 +170,7 @@ export default {
       axios
         .get(
           this.baseURL +
-            `/user/search?page=${this.page}&size=${this.size}&name=${this.formSearch.name}`
+            `/new/search?name=${this.formSearch.title}&?page=${this.page}&size=${this.size}`
         )
         .then((response) => {
           this.items = response.data.content
@@ -211,46 +181,33 @@ export default {
         })
     },
 
-    createUser () {
-      const usernameRegex = new RegExp('^[a-z0-9A-Z]{1,}$')
-      if (this.userCreate.username === '' || this.userCreate.username == null) {
-        this.$toast.error('username không được để trống!')
+    createNew () {
+      // const usernameRegex = new RegExp('^[a-z0-9A-Z]{1,}$')
+      if (this.newCreate.title === '' || this.newCreate.title == null) {
+        this.$toast.error('Tiêu đề không được trống!')
         return
       }
-      if (!usernameRegex.test(this.userCreate.username)) {
-        this.$toast.error('username Không được chứa ký tự đặc biệt!')
-        return
-      }
-      if (this.userCreate.role === '' || this.userCreate.role == null) {
-        this.$toast.error('Vai trò không được để trống!')
-        return
-      }
-
-      if (this.userCreate.password === '' || this.userCreate.password == null) {
-        this.$toast.error('password không được để trống!')
-        return
-      }
-      if (this.userCreate.password !== this.userCreate.repassword) {
-        this.$toast.error('password nhập lại không giống password!')
+      if (this.newCreate.content === '' || this.newCreate.content == null) {
+        this.$toast.error('Nội dung không được để trống!')
         return
       }
 
       axios
-        .post(this.baseURL + `/user/register`, this.userCreate)
+        .post(this.baseURL + `/new/`, this.newCreate)
         .then((response) => {
           if (this.active === 'create') {
-            this.$toast.open('Thêm mới tài khoản thành công !')
+            this.$toast.open('Thêm mới tin tức thành công !')
           } else {
-            this.$toast.open('Sửa thành công !')
+            this.$toast.open('Sửa tin tức thành công !')
           }
           this.dialogFormVisible = false
-          this.userCreate = {}
+          this.newCreate = {}
           this.active = 'create'
           this.search()
           // this.dialogFormVisible = !this.dialogFormVisibles
         })
         .catch((e) => {
-          this.$toast.error('username đã tồn tại vui lòng chọn username khác!')
+          this.$toast.error('Thêm mới không thành công!')
           // this.errors.push(e);
         })
     },
@@ -295,13 +252,6 @@ export default {
   name: 'Forms',
   data () {
     return {
-      options: [{
-        value: 'ROLE_ADMIN',
-        label: 'Admin'
-      }, {
-        value: 'ROLE_USER',
-        label: 'User'
-      }],
       fileList: [],
       active: 'create',
       dialogImageUrl: '',
@@ -312,22 +262,17 @@ export default {
       dialogFormVisible: false,
       items: [],
       formSearch: {
-        name: ''
+        title: ''
 
       },
-      userCreate: {
+      newCreate: {
         id: null,
-        username: null,
-        password: null,
-        repassword: null,
-        firstName: null,
-        lastName: null,
-        email: null,
-        role: null
+        content: null,
+        title: null
       },
       formLabelWidth: '150px',
       editorConfig: {
-        // The configuration of the editor.
+
       },
       totalElements: 0,
       page: 0,

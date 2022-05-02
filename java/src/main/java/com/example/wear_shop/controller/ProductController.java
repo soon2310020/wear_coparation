@@ -54,6 +54,11 @@ public class ProductController {
         }
         return ResponseEntity.ok(product);
     }
+    @GetMapping("/chart_all")
+    public ResponseEntity<Long> countAllProduct()
+    {
+        return ResponseEntity.ok(productRepository.countAllByStatus());
+    }
 
 
 }
