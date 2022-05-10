@@ -112,4 +112,10 @@ public class ProductServiceImpl implements ProductService {
         orderDetails.setTotal(totalPrice+feeShip);
         return orderDetails;
     }
+
+    @Override
+    public Page<Product> getProductForfrontEnd(ProductReqDTO productReqDTO, Pageable pageable) {
+        Page<Product> products = productRepository.searchProductForFrontEndBy(productReqDTO.getName(), productReqDTO.getFromPrice(), productReqDTO.getToPrice(), productReqDTO.getCategoryIds(), pageable);
+        return products;
+    }
 }

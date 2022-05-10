@@ -1,6 +1,8 @@
 package com.example.wear_shop.data.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -8,6 +10,7 @@ import java.time.Instant;
 @Data
 @Entity
 @Table(name = "news")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class New {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +19,7 @@ public class New {
     String title;
 
     String content;
+    String description;
 
 
     @Column(name = "created_at")

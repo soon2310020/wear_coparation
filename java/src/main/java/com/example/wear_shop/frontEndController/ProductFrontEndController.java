@@ -30,7 +30,7 @@ public class ProductFrontEndController {
 
     @PostMapping("/search-product")
     public ResponseEntity<Page<Product>> searchProduct(@RequestBody ProductReqDTO req, Pageable pageable) throws IOException {
-        Page<Product> products = productService.getProduct(req,pageable);
+        Page<Product> products = productService.getProductForfrontEnd(req,pageable);
         categoryFileMapping.mappingFileForProduct(products.getContent());
         return ResponseEntity.ok(products);
     }

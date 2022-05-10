@@ -22,6 +22,16 @@ public interface ProductRepository  extends JpaRepository<Product,Long> {
                                   @Param("toPrice") Long toPrice,
                                   @Param("cId") List<Long> category,
                                   Pageable pageable);
+    @Query("select distinct p from Product p inner join p.category c where " +
+            " (coalesce(:cId) is null or c.id in :cId ) and " +
+            " ( :name is null or p.title like %:name%) and " +
+            " ( :toPrice is null or p.price <= :toPrice) and " +
+            "( :fromPrice is null or p.price >= :fromPrice) and p.status <> 0")
+    Page<Product> searchProductForFrontEndBy(@Param("name") String name,
+                                  @Param("fromPrice") Long fromPrice,
+                                  @Param("toPrice") Long toPrice,
+                                  @Param("cId") List<Long> category,
+                                  Pageable pageable);
     @Query("select count( distinct p) from Product p where p.status <> 0")
     Long countAllByStatus();
 }

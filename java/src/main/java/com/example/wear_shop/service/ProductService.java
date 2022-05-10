@@ -13,6 +13,7 @@ import java.util.List;
 
 public interface ProductService {
      Page<Product> getProduct(ProductReqDTO productReqDTO, Pageable pageable);
+     Page<Product> getProductForfrontEnd(ProductReqDTO productReqDTO, Pageable pageable);
      void create(ProductCreateReqDTO createReqDTO);
      OrderDTO getOrderInfor(List<ProductOrderReq> reqs) throws IOException;
 }

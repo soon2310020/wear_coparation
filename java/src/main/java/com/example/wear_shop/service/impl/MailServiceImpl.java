@@ -16,8 +16,8 @@ public class MailServiceImpl implements MailService {
         message.setFrom("WearShop");
         message.setTo(userMail);
         message.setSubject("WEARSHOP_ORDER");
-        message.setText("Cảm ơn bạn đã đặt hàng vui lòng truy cập link "+url+id+
-                " để biết thông tin đơn hàng");
+        message.setText("Cảm ơn bạn đã đặt hàng nhân viên cửa hàng sẽ sớm liên hệ với bạn để xác nhận đơn hàng, "+
+                " để biết thông tin đơn hàng vui lòng liên hệ 0865279193");
 
         // Send Message!
         this.emailSender.send(message);
